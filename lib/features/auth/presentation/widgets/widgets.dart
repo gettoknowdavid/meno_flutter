@@ -5,5 +5,7 @@ export 'forgot_password_button.dart';
 export 'google_button.dart';
 export 'login_form_widget.dart';
 export 'register_form_widget.dart';
+export 'resend_text_with_timer_widget.dart';
+export 'reset_password_form_widget.dart';
 export 'terms_of_service_checkbox.dart';
 export 'verify_email_form_widget.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/features/auth/presentation/widgets/resend_text_with_timer_widget.dart';
 
 class VerifyEmailFormWidget extends HookConsumerWidget {
   const VerifyEmailFormWidget({super.key});
@@ -37,7 +38,7 @@ class VerifyEmailFormWidget extends HookConsumerWidget {
             const MenoSpacer.v(Insets.xxlg),
             const MenoOtpField(),
             const MenoSpacer.v(24),
-            const _ResendTextWithTimer(),
+            const ResendTextWithTimerWidget(),
             const MenoSpacer.v(Insets.xxlg),
             MenoPrimaryButton(
               size: MenoSize.lg,
@@ -47,43 +48,6 @@ class VerifyEmailFormWidget extends HookConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ResendTextWithTimer extends StatelessWidget {
-  const _ResendTextWithTimer();
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = MenoTextTheme.of(context);
-    final colors = MenoColorScheme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text.rich(
-          TextSpan(
-            style: textTheme.captionMedium.copyWith(
-              color: colors.labelPlaceholder,
-            ),
-            children: [
-              // const TextSpan(text: 'Didn\'t receive code? '),
-              const TextSpan(text: 'Resend code in '),
-              TextSpan(text: ' 00:59', style: textTheme.captionBold),
-            ],
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const MenoSpacer.h(4),
-        // SizedBox(
-        //   height: 18,
-        //   child: MenoTertiaryButton(
-        //     onPressed: () {},
-        //     style: ButtonStyle(padding: Internal.all(EdgeInsets.zero)),
-        //     child: const MenoText.caption('Resend'),
-        //   ),
-        // ),
-      ],
     );
   }
 }

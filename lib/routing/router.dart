@@ -41,6 +41,11 @@ GoRouter router(Ref ref) {
         name: Routes.verifyEmail.name,
         builder: (context, state) => const VerifyEmailPage(),
       ),
+      GoRoute(
+        path: Routes.resetPassword.path,
+        name: Routes.resetPassword.name,
+        builder: (context, state) => const ResetPasswordPage(),
+      ),
     ],
   );
 }
