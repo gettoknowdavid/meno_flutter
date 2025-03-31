@@ -50,7 +50,7 @@ class OnboardingContent extends StatelessWidget {
           defaultValue: [
             const MenoSpacer.v(24),
             MenoPrimaryButton(
-              onPressed: () => context.push(Routes.register.path),
+              onPressed: () => context.push(Routes.verifyEmail.path),
               size: MenoSize.lg,
               child: const Text('Get started'),
             ),

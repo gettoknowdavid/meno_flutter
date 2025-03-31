@@ -142,7 +142,13 @@ class RegisterPasswordField extends HookConsumerWidget {
         const MenoSpacer.v(Insets.sm),
         const MenoLinearProgressIndicator(value: 0),
         const MenoSpacer.v(Insets.xs),
-        const MenoText.nano('Your password must include:'),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            MenoText.nano('Your password must include:'),
+            MenoText.nano('Good'),
+          ],
+        ),
         const MenoSpacer.v(Insets.md),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

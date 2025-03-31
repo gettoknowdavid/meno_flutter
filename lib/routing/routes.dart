@@ -9,6 +9,7 @@ sealed class Routes {
   static const onboarding = _AppRoute('/onboarding', 'Onboarding');
   static const login = _AppRoute('/login', 'Login');
   static const register = _AppRoute('/register', 'Register');
+  static const verifyEmail = _AppRoute('/verify-email', 'Verify Email');
   static const home = _AppRoute('/', 'Home', protected: true);
 
   static const values = [onboarding, login, register, home];
