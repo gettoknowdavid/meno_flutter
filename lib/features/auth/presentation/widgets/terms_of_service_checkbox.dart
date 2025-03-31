@@ -19,6 +19,7 @@ class TermsOfServiceCheckbox extends HookConsumerWidget {
       validator: ref.read(registerFormProvider.notifier).termsValidator,
       onChanged: ref.read(registerFormProvider.notifier).onTermsChanged,
       label: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const MenoText.caption('By continuing you agree to our '),
           InkWell(

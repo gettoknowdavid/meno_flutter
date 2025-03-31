@@ -13,7 +13,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   // FutureOr<String?> handleRedirect(BuildContext context, GoRouterState state) {
-    
+
   // }
 
   return GoRouter(
@@ -35,6 +35,11 @@ GoRouter router(Ref ref) {
         path: Routes.register.path,
         name: Routes.register.name,
         builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: Routes.verifyEmail.path,
+        name: Routes.verifyEmail.name,
+        builder: (context, state) => const VerifyEmailPage(),
       ),
     ],
   );
