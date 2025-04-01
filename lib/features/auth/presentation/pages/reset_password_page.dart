@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/features/auth/auth.dart';
+import 'package:meno_flutter/routing/routing.dart';
 
 class ResetPasswordPage extends HookWidget {
   const ResetPasswordPage({super.key});
@@ -47,7 +49,7 @@ class ResetPasswordPage extends HookWidget {
               const MenoSpacer.v(Insets.xxlg),
               MenoPrimaryButton(
                 size: MenoSize.lg,
-                onPressed: () {},
+                onPressed: () => context.push(Routes.passwordRecovery.path),
                 child: const Text('Continue'),
               ),
             ],
