@@ -93,7 +93,7 @@ class _NewPasswordSuccess extends StatelessWidget {
             const MenoSpacer.v(48),
             MenoPrimaryButton(
               size: MenoSize.lg,
-              onPressed: () => context.go(Routes.login.path),
+              onPressed: () => context.go(MenoRoute.login.path),
               child: const Text('Go back to log in'),
             ),
           ],

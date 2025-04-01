@@ -1,14 +1,12 @@
 import 'package:meno_flutter/features/onboarding/data/onboarding_facade.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'onboarding_provider.g.dart';
+part 'onboarding_notifier.g.dart';
 
 @riverpod
-class Onboarding extends _$Onboarding {
+class OnboardingNotifier extends _$OnboardingNotifier {
   @override
-  FutureOr<bool> build() {
-    return ref.read(onboardingFacadeProvider).onboardingComplete;
-  }
+  Future<bool> build() => ref.read(onboardingFacadeProvider).onboardingComplete;
 
   Future<void> completeOnboarding() async {
     return ref.read(onboardingFacadeProvider).completeOnboarding();

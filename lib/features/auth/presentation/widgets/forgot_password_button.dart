@@ -12,7 +12,7 @@ class ForgotPasswordButton extends StatelessWidget {
     return SizedBox(
       height: 16,
       child: MenoTertiaryButton(
-        onPressed: () => context.push(Routes.resetPassword.path),
+        onPressed: () => context.push(MenoRoute.resetPassword.path),
         style: ButtonStyle(
           padding: Internal.all(EdgeInsets.zero),
           foregroundColor: Internal.resolveWith(colors.labelPrimary),

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:meno_flutter/config/config.dart';
+import 'package:meno_flutter/features/auth/auth.dart';
 import 'package:meno_flutter/services/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -37,46 +38,45 @@ class AuthInterceptor extends Interceptor {
   String? get cachedToken => _cachedToken;
 
   /// Removes only the expired user from storage without affecting others
-  Future<void> _forceLogout(String userId) async {
-    final accountsJson = await _storage.read(AuthStorageKeys.accounts);
-    if (accountsJson != null) {
-      final accounts = jsonDecode(accountsJson) as Map<String, dynamic>;
-      accounts.remove(userId);
+  Future<void> _forceLogout() async {
+    _cachedToken = null;
 
-      final updatedAccounts = jsonEncode(accounts);
-      await _storage.write(AuthStorageKeys.accounts, value: updatedAccounts);
+    final currentUserId = await _storage.read(AuthStorageKeys.currentUserId);
+    final accountsJson = await _storage.read(AuthStorageKeys.allAccounts);
+
+    if (accountsJson != null && currentUserId != null) {
+      final allAccounts = jsonDecode(accountsJson) as Map<String, dynamic>;
+      allAccounts.remove(currentUserId);
+      final updatedAccounts = jsonEncode(allAccounts);
+      await _storage.write(AuthStorageKeys.allAccounts, value: updatedAccounts);
     }
 
     // Remove current user if it's the same as the expired one
-    final currentUserJson = await _storage.read(AuthStorageKeys.currentAccount);
-    if (currentUserJson != null) {
-      final currentUser = jsonDecode(currentUserJson) as Map<String, dynamic>;
-      if (currentUser.keys.first == userId) {
-        await _storage.delete(AuthStorageKeys.currentAccount);
-      }
-    }
-
-    _cachedToken = null;
+    await _storage.delete(AuthStorageKeys.currentUserId);
   }
 
   /// Retrieves the latest token from the [SecureStorageService]
   Future<String?> _getToken() async {
-    if (_cachedToken != null) return _cachedToken;
+    if (_cachedToken != null && !JwtDecoder.isExpired(_cachedToken!)) {
+      return _cachedToken;
+    }
 
-    final currentUserJson = await _storage.read(AuthStorageKeys.currentAccount);
-    if (currentUserJson == null) return null;
+    final userId = await _storage.read(AuthStorageKeys.currentUserId);
+    final allAccountsString = await _storage.read(AuthStorageKeys.allAccounts);
 
-    final currentUser = jsonDecode(currentUserJson) as Map<String, dynamic>;
-    if (currentUser.isEmpty) return null;
+    if (allAccountsString?.isEmpty ?? false) return null;
 
-    final currentUserId = currentUser.keys.first;
-    final token = currentUser[currentUserId] as String?;
+    final decodedMap = jsonDecode(allAccountsString!) as Map<String, dynamic>;
+    final accountsMap = decodedMap.map<String, UserCredentialDto>((key, value) {
+      final userData = value as Map<String, dynamic>;
+      return MapEntry(key, UserCredentialDto.fromJson(userData));
+    });
 
+    final token = accountsMap[userId]?.token;
     if (token != null && !JwtDecoder.isExpired(token)) {
-      _cachedToken = token;
-      return token;
+      return _cachedToken = token;
     } else {
-      await _forceLogout(currentUserId);
+      await _forceLogout();
       return null;
     }
   }

@@ -8,8 +8,8 @@ abstract class IAuthFacade {
   // /// Returns the [User] object of the currently signed-in account (if any)
   // User? get currentUser;
 
-  // /// Returns the [UserCredential] of the currently signed-in account (if any)
-  // UserCredential? get currentCredential;
+  /// Returns the [UserCredential] of the currently signed-in account (if any)
+  Stream<UserCredential?> get authStateChanges;
 
   /// Logs the user in with their email address and password.
   ///

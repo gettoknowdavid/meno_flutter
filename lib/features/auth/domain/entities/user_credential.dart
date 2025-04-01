@@ -10,7 +10,7 @@ abstract class UserCredential with _$UserCredential {
     required User user,
 
     /// The user's token.
-    Token? token,
+    required Token token,
   }) = _UserCredential;
 }
 

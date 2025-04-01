@@ -22,8 +22,8 @@ class AuthRedirectionPrompt extends ConsumerWidget {
           onPressed:
               () =>
                   isLogin
-                      ? context.push(Routes.register.path)
-                      : context.push(Routes.login.path),
+                      ? context.push(MenoRoute.register.path)
+                      : context.push(MenoRoute.login.path),
           style: ButtonStyle(padding: Internal.all(EdgeInsets.zero)),
           child: isLogin ? const Text('Create one') : const Text('Log in'),
         ),

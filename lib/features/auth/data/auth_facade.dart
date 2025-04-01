@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meno_flutter/features/auth/auth.dart';
 import 'package:meno_flutter/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -5,11 +8,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'auth_facade.g.dart';
 
 @riverpod
+Stream<UserCredential?> authStateChanges(Ref ref) {
+  return ref.watch(authFacadeProvider.notifier).authStateChanges;
+}
+
+@riverpod
 class AuthFacade extends _$AuthFacade implements IAuthFacade {
+  final _controller = StreamController<UserCredential?>.broadcast();
+
   @override
   FutureOr<UserCredential?> build() async {
-    final credential = await ref.watch(authLocalProvider).getCurrentAccount();
-    return credential?.toDomain;
+    final dto = await ref.watch(authLocalProvider).getCurrentAccount();
+    final credential = dto?.toDomain;
+    _controller.add(credential);
+    return credential;
   }
 
   @override
@@ -23,7 +35,15 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
         .login(email: email.value, password: password.value);
     state = result.fold(
       (exception) => AsyncError(exception, StackTrace.current),
-      (response) => AsyncData(response.data?.toDomain),
+      (response) {
+        final credential = response.data;
+        if (credential != null) {
+          ref.read(authLocalProvider).addAccount(credential);
+          return AsyncData(credential.toDomain);
+        }
+        _controller.add(credential?.toDomain);
+        return AsyncError(const NoCredentialsException(), StackTrace.current);
+      },
     );
   }
 
@@ -44,7 +64,16 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
         );
     state = result.fold(
       (exception) => AsyncError(exception, StackTrace.current),
-      (response) => AsyncData(response.data?.toDomain),
+      (response) {
+        final credential = response.data;
+        if (credential != null) {
+          ref.read(authLocalProvider).addAccount(credential);
+          return AsyncData(credential.toDomain);
+        }
+
+        _controller.add(credential?.toDomain);
+        return AsyncError(const NoCredentialsException(), StackTrace.current);
+      },
     );
   }
 
@@ -53,4 +82,7 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
     // TODO: implement switchAccount
     throw UnimplementedError();
   }
+
+  @override
+  Stream<UserCredential?> get authStateChanges => _controller.stream;
 }
