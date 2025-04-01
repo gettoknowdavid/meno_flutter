@@ -4,6 +4,8 @@ export 'create_account_form.dart';
 export 'forgot_password_button.dart';
 export 'google_button.dart';
 export 'login_form_widget.dart';
+export 'new_password_form_widget.dart';
+export 'password_rules_widget_tracker.dart';
 export 'register_form_widget.dart';
 export 'resend_text_with_timer_widget.dart';
 export 'reset_password_form_widget.dart';

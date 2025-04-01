@@ -11,6 +11,7 @@ sealed class Routes {
   static const register = _AppRoute('/register', 'Register');
   static const verifyEmail = _AppRoute('/verify-email', 'Verify Email');
   static const resetPassword = _AppRoute('/reset-password', 'Reset Password');
+  static const passwordRecovery = _AppRoute('/password-recovery', 'Password Receovery');
   static const home = _AppRoute('/', 'Home', protected: true);
 
   static const values = [onboarding, login, register, home];

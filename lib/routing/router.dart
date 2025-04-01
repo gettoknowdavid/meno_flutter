@@ -46,6 +46,11 @@ GoRouter router(Ref ref) {
         name: Routes.resetPassword.name,
         builder: (context, state) => const ResetPasswordPage(),
       ),
+      GoRoute(
+        path: Routes.passwordRecovery.path,
+        name: Routes.passwordRecovery.name,
+        builder: (context, state) => const PasswordRecoveryPage(),
+      ),
     ],
   );
 }

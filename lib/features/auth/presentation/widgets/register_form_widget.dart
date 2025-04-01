@@ -86,43 +86,12 @@ class RegisterEmailField extends HookConsumerWidget {
   }
 }
 
-class PasswordRuleWidget extends ConsumerWidget {
-  const PasswordRuleWidget(this.error, {super.key});
-  final PasswordValidationError error;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = MenoColorScheme.of(context);
-    final password = ref.watch(registerFormProvider.select((s) => s.password));
-    final isCurrentError = password.errors.contains(error);
-
-    final effectiveColor =
-        password.isPure
-            ? colors.labelPlaceholder
-            : isCurrentError
-            ? colors.errorBase
-            : colors.successBase;
-
-    return SizedBox(
-      height: 38,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          MenoText.subheading(error.title, color: effectiveColor),
-          MenoText.nano(error.subtitle, color: effectiveColor),
-        ],
-      ),
-    );
-  }
-}
-
 class RegisterPasswordField extends HookConsumerWidget {
   const RegisterPasswordField({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final focusNode = useFocusNode();
-    const errors = PasswordValidationError.values;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -140,20 +109,7 @@ class RegisterPasswordField extends HookConsumerWidget {
           focusNode: focusNode,
         ),
         const MenoSpacer.v(Insets.sm),
-        const MenoLinearProgressIndicator(value: 0),
-        const MenoSpacer.v(Insets.xs),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            MenoText.nano('Your password must include:'),
-            MenoText.nano('Good'),
-          ],
-        ),
-        const MenoSpacer.v(Insets.md),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: errors.map(PasswordRuleWidget.new).toList(),
-        ),
+        const PasswordRulesWidgetTracker(),
       ],
     );
   }
