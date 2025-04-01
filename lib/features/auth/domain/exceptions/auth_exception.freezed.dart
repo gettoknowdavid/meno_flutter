@@ -111,6 +111,38 @@ as String,
 /// @nodoc
 
 
+class NoCredentialsException implements AuthException {
+  const NoCredentialsException();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NoCredentialsException);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthException.noCredentials()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class InvalidEmailOrPasswordException implements AuthException {
   const InvalidEmailOrPasswordException();
   

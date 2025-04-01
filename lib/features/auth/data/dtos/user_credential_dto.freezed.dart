@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserCredentialDto {
 
- UserDto get user; String? get token;
+ UserDto get user; String get token;
 /// Create a copy of UserCredentialDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $UserCredentialDtoCopyWith<$Res>  {
   factory $UserCredentialDtoCopyWith(UserCredentialDto value, $Res Function(UserCredentialDto) _then) = _$UserCredentialDtoCopyWithImpl;
 @useResult
 $Res call({
- UserDto user, String? token
+ UserDto user, String token
 });
 
 
@@ -66,11 +66,11 @@ class _$UserCredentialDtoCopyWithImpl<$Res>
 
 /// Create a copy of UserCredentialDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? token = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? token = null,}) {
   return _then(_self.copyWith(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserDto,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String?,
+as UserDto,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 /// Create a copy of UserCredentialDto
@@ -90,11 +90,11 @@ $UserDtoCopyWith<$Res> get user {
 @JsonSerializable()
 
 class _UserCredentialDto implements UserCredentialDto {
-  const _UserCredentialDto({required this.user, this.token});
+  const _UserCredentialDto({required this.user, required this.token});
   factory _UserCredentialDto.fromJson(Map<String, dynamic> json) => _$UserCredentialDtoFromJson(json);
 
 @override final  UserDto user;
-@override final  String? token;
+@override final  String token;
 
 /// Create a copy of UserCredentialDto
 /// with the given fields replaced by the non-null parameter values.
@@ -129,7 +129,7 @@ abstract mixin class _$UserCredentialDtoCopyWith<$Res> implements $UserCredentia
   factory _$UserCredentialDtoCopyWith(_UserCredentialDto value, $Res Function(_UserCredentialDto) _then) = __$UserCredentialDtoCopyWithImpl;
 @override @useResult
 $Res call({
- UserDto user, String? token
+ UserDto user, String token
 });
 
 
@@ -146,11 +146,11 @@ class __$UserCredentialDtoCopyWithImpl<$Res>
 
 /// Create a copy of UserCredentialDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? token = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? token = null,}) {
   return _then(_UserCredentialDto(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserDto,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String?,
+as UserDto,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

@@ -17,7 +17,7 @@ mixin _$UserCredential {
 
 /// The user.
  User get user;/// The user's token.
- Token? get token;
+ Token get token;
 /// Create a copy of UserCredential
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserCredentialCopyWith<$Res>  {
   factory $UserCredentialCopyWith(UserCredential value, $Res Function(UserCredential) _then) = _$UserCredentialCopyWithImpl;
 @useResult
 $Res call({
- User user, Token? token
+ User user, Token token
 });
 
 
@@ -65,11 +65,11 @@ class _$UserCredentialCopyWithImpl<$Res>
 
 /// Create a copy of UserCredential
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? token = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? token = null,}) {
   return _then(_self.copyWith(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as Token?,
+as User,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as Token,
   ));
 }
 /// Create a copy of UserCredential
@@ -89,13 +89,13 @@ $UserCopyWith<$Res> get user {
 
 
 class _UserCredential implements UserCredential {
-  const _UserCredential({required this.user, this.token});
+  const _UserCredential({required this.user, required this.token});
   
 
 /// The user.
 @override final  User user;
 /// The user's token.
-@override final  Token? token;
+@override final  Token token;
 
 /// Create a copy of UserCredential
 /// with the given fields replaced by the non-null parameter values.
@@ -127,7 +127,7 @@ abstract mixin class _$UserCredentialCopyWith<$Res> implements $UserCredentialCo
   factory _$UserCredentialCopyWith(_UserCredential value, $Res Function(_UserCredential) _then) = __$UserCredentialCopyWithImpl;
 @override @useResult
 $Res call({
- User user, Token? token
+ User user, Token token
 });
 
 
@@ -144,11 +144,11 @@ class __$UserCredentialCopyWithImpl<$Res>
 
 /// Create a copy of UserCredential
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? token = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? token = null,}) {
   return _then(_UserCredential(
 user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as User,token: freezed == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as Token?,
+as User,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as Token,
   ));
 }
 

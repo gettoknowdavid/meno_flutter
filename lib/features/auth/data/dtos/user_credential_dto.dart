@@ -6,8 +6,10 @@ part 'user_credential_dto.g.dart';
 
 @freezed
 abstract class UserCredentialDto with _$UserCredentialDto {
-  const factory UserCredentialDto({required UserDto user, String? token}) =
-      _UserCredentialDto;
+  const factory UserCredentialDto({
+    required UserDto user,
+    required String token,
+  }) = _UserCredentialDto;
 
   factory UserCredentialDto.fromJson(Map<String, dynamic> json) =>
       _$UserCredentialDtoFromJson(json);
@@ -19,15 +21,12 @@ extension UserCrendentialDtoX on UserCredentialDto {
   }
 
   UserCredential get toDomain {
-    return UserCredential(
-      user: user.toDomain,
-      token: token != null ? Token(token!) : null,
-    );
+    return UserCredential(user: user.toDomain, token: Token(token));
   }
 }
 
 extension UserCredentialToDtoX on UserCredential {
   UserCredentialDto get toDto {
-    return UserCredentialDto(user: user.toDto, token: token?.getOrNull());
+    return UserCredentialDto(user: user.toDto, token: token.getOrElse(''));
   }
 }

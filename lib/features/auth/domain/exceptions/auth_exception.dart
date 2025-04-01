@@ -6,6 +6,7 @@ part 'auth_exception.freezed.dart';
 @freezed
 class AuthException with _$AuthException implements MenoException {
   const factory AuthException.message(String msg) = AuthExceptionWithMessage;
+  const factory AuthException.noCredentials() = NoCredentialsException;
   const factory AuthException.invalidEmailOrPassword() =
       InvalidEmailOrPasswordException;
   const factory AuthException.unableToVerifyEmail() =
@@ -22,6 +23,7 @@ extension AuthExceptionX on AuthException {
   String get message {
     return switch (this) {
       AuthExceptionWithMessage(:final msg) => msg,
+      NoCredentialsException() => 'No credentials.',
       InvalidEmailOrPasswordException() => 'Invalid email of password.',
       UnableToVerifyEmailException() =>
         'Unable to verify your email at this time. Try again later.',

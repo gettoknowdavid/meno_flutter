@@ -49,7 +49,7 @@ class ResetPasswordPage extends HookWidget {
               const MenoSpacer.v(Insets.xxlg),
               MenoPrimaryButton(
                 size: MenoSize.lg,
-                onPressed: () => context.push(Routes.passwordRecovery.path),
+                onPressed: () => context.push(MenoRoute.passwordRecovery.path),
                 child: const Text('Continue'),
               ),
             ],
