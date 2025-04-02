@@ -28,6 +28,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   meno_design_system:
     path: ../meno_design_system
+  meta: ^1.16.0
   responsive_framework: ^1.5.1
   retrofit: ^4.4.2
   riverpod: ^2.6.1

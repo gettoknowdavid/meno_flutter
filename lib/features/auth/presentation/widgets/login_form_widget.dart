@@ -12,7 +12,7 @@ class LoginFormWidget extends HookConsumerWidget {
     final formKey = useMemoized(GlobalKey<FormState>.new);
 
     ref.listen(authFacadeProvider, (previous, next) {
-      if (next.hasError) {
+      if (next.hasError && !next.isLoading) {
         final exception = next.error! as AuthException;
         MenoSnackBar.error(
           exception.message,
@@ -84,8 +84,8 @@ class LoginPasswordField extends HookConsumerWidget {
       required: false,
       enabled: !isLoading,
       focusNode: focusNode,
-      onChanged: ref.read(registerFormProvider.notifier).onPasswordChanged,
-      validator: ref.read(registerFormProvider.notifier).passwordValidator,
+      onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
+      validator: ref.read(loginFormProvider.notifier).passwordValidator,
     );
   }
 }

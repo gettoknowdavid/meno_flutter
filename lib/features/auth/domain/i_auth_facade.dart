@@ -15,10 +15,7 @@ abstract class IAuthFacade {
   ///
   /// Returns an `Either` value, where the left value is a `AuthException`
   /// object and the right value is a `Unit` object.
-  Future<void> login({
-    required EmailAddress email,
-    required Password password,
-  });
+  Future<void> login({required EmailAddress email, required Password password});
 
   /// Registers a new user with Meno.
   ///
@@ -30,6 +27,8 @@ abstract class IAuthFacade {
     required Password password,
     Bio? bio,
   });
+
+  Future<void> logout();
 
   // /// Logs the user out.
   // Future<void> logout();

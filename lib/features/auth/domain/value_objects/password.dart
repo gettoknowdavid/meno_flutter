@@ -24,47 +24,54 @@ class Password extends FormzInput<String, PasswordValidationError> {
 
   @override
   PasswordValidationError? validator(String value) {
-    if (value.trim().isEmpty) return PasswordValidationError.tooShort;
+    if (mode == PasswordMode.login) {
+      if (value.trim().isEmpty) return PasswordValidationError.tooShort;
+      return null;
+    } else {
+      if (value.trim().isEmpty) return PasswordValidationError.tooShort;
 
-    if (mode == PasswordMode.login) return null;
+      if (value.length < 8) return PasswordValidationError.tooShort;
 
-    if (value.length < 8) return PasswordValidationError.tooShort;
+      if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
+        return PasswordValidationError.missingUppercase;
+      }
+      if (!RegExp(r'(?=.*[a-z])').hasMatch(value)) {
+        return PasswordValidationError.missingLowercase;
+      }
+      if (!RegExp(r'(?=.*[0-9])').hasMatch(value)) {
+        return PasswordValidationError.missingNumber;
+      }
+      if (!RegExp(r'(?=.*[@$!%*?&])').hasMatch(value)) {
+        return PasswordValidationError.missingSpecialCharacter;
+      }
 
-    if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
-      return PasswordValidationError.missingUppercase;
+      return null;
     }
-    if (!RegExp(r'(?=.*[a-z])').hasMatch(value)) {
-      return PasswordValidationError.missingLowercase;
-    }
-    if (!RegExp(r'(?=.*[0-9])').hasMatch(value)) {
-      return PasswordValidationError.missingNumber;
-    }
-    if (!RegExp(r'(?=.*[@$!%*?&])').hasMatch(value)) {
-      return PasswordValidationError.missingSpecialCharacter;
-    }
-
-    return null;
   }
 
   Set<PasswordValidationError> get errors => _errors();
 
   Set<PasswordValidationError> _errors() {
     final e = <PasswordValidationError>{};
-    if (value.length < 8) e.add(PasswordValidationError.tooShort);
-    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-      e.add(PasswordValidationError.missingUppercase);
+    if (mode == PasswordMode.login) {
+      if (value.trim().isEmpty) e.add(PasswordValidationError.tooShort);
+      return e;
+    } else {
+      if (value.length < 8) e.add(PasswordValidationError.tooShort);
+      if (!RegExp(r'[A-Z]').hasMatch(value)) {
+        e.add(PasswordValidationError.missingUppercase);
+      }
+      if (!RegExp(r'[a-z]').hasMatch(value)) {
+        e.add(PasswordValidationError.missingLowercase);
+      }
+      if (!RegExp(r'[0-9]').hasMatch(value)) {
+        e.add(PasswordValidationError.missingNumber);
+      }
+      if (!RegExp(r'[@$!%*?&]').hasMatch(value)) {
+        e.add(PasswordValidationError.missingSpecialCharacter);
+      }
+      return e;
     }
-    if (!RegExp(r'[a-z]').hasMatch(value)) {
-      e.add(PasswordValidationError.missingLowercase);
-    }
-    if (!RegExp(r'[0-9]').hasMatch(value)) {
-      e.add(PasswordValidationError.missingNumber);
-    }
-    if (!RegExp(r'[@$!%*?&]').hasMatch(value)) {
-      e.add(PasswordValidationError.missingSpecialCharacter);
-    }
-
-    return e;
   }
 }
 
