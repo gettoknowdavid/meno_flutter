@@ -3,6 +3,7 @@ analyzer:
   errors:
     avoid_positional_boolean_parameters: ignore
     duplicate_ignore: ignore
+    inference_failure_on_function_invocation: ignore
     library_private_types_in_public_api: ignore
     public_member_api_docs: ignore
     require_trailing_commas: ignore

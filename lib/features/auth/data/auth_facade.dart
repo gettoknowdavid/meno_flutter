@@ -18,6 +18,8 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
 
   @override
   FutureOr<UserCredential?> build() async {
+    ref.onDispose(_controller.close);
+
     final dto = await ref.watch(authLocalProvider).getCurrentAccount();
     final credential = dto?.toDomain;
     _controller.add(credential);
@@ -38,10 +40,10 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
       (response) {
         final credential = response.data;
         if (credential != null) {
+          _controller.add(credential.toDomain);
           ref.read(authLocalProvider).addAccount(credential);
           return AsyncData(credential.toDomain);
         }
-        _controller.add(credential?.toDomain);
         return AsyncError(const NoCredentialsException(), StackTrace.current);
       },
     );
@@ -67,11 +69,11 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
       (response) {
         final credential = response.data;
         if (credential != null) {
+          _controller.add(credential.toDomain);
           ref.read(authLocalProvider).addAccount(credential);
           return AsyncData(credential.toDomain);
         }
 
-        _controller.add(credential?.toDomain);
         return AsyncError(const NoCredentialsException(), StackTrace.current);
       },
     );
@@ -81,6 +83,12 @@ class AuthFacade extends _$AuthFacade implements IAuthFacade {
   Future<void> switchAccount(Id id) {
     // TODO: implement switchAccount
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> logout() {
+    _controller.add(null);
+    return ref.read(authLocalProvider).removeAccount();
   }
 
   @override

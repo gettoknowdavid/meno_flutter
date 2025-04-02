@@ -2,6 +2,7 @@
 //ignore_for_file: cascade_invocations, strict_raw_type
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart' hide Headers;
@@ -113,5 +114,11 @@ class AuthInterceptor extends Interceptor {
       options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
     return super.onRequest(options, handler);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    log(response.data?.toString() ?? 'Nothing returned');
+    super.onResponse(response, handler);
   }
 }

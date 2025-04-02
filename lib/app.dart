@@ -12,10 +12,11 @@ class MenoApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final routerConfig = ref.watch(routerProvider);
     ref
       ..watch(authFacadeProvider)
       ..watch(sessionProvider);
-    return MenoAppView(routerConfig: ref.watch(routerProvider));
+    return MenoAppView(routerConfig: routerConfig);
   }
 }
 

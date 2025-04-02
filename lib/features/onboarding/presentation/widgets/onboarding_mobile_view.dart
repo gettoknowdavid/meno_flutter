@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/features/onboarding/presentation/widgets/meno_logo.dart';
 import 'package:meno_flutter/features/onboarding/presentation/widgets/onboarding_body.dart';
@@ -50,13 +49,13 @@ class OnboardingContent extends StatelessWidget {
           defaultValue: [
             const MenoSpacer.v(24),
             MenoPrimaryButton(
-              onPressed: () => context.push(MenoRoute.verifyEmail.path),
+              onPressed: () => const VerifyEmailRoute().push<void>(context),
               size: MenoSize.lg,
               child: const Text('Get started'),
             ),
             const MenoSpacer.v(16),
             MenoSecondaryButton(
-              onPressed: () => context.push(MenoRoute.login.path),
+              onPressed: () => const LoginRoute().push<void>(context),
               size: MenoSize.lg,
               child: const Text('Login'),
             ),
