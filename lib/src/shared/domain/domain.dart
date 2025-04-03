@@ -1,3 +1,4 @@
+export 'auth_role.dart';
 export 'destination.dart';
 export 'exceptions/exceptions.dart';
 export 'meno_form_status.dart';
