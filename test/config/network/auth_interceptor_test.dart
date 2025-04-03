@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:meno_flutter/config/config.dart';
-import 'package:meno_flutter/services/services.dart';
+import 'package:meno_flutter/src/config/config.dart';
+import 'package:meno_flutter/src/services/services.dart';
 import 'package:mockito/annotations.dart';
 import 'auth_interceptor_test.mocks.dart';
 

@@ -1,0 +1,18 @@
+targets:
+  $default:
+    builders:
+      envied_generator:
+        enabled: true
+        generate_for:
+          - lib/src/config/env/*.dart
+      copy_with_extension_gen:
+        enabled: true
+        generate_for:
+          - lib/**/entities/*.dart
+      json_serializable:
+        options:
+          include_if_null: false
+          explicit_to_json: true
+        generate_for:
+          - lib/**/dtos/*.dart
+          - lib/src/config/network/*.dart

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/features/onboarding/onboarding.dart';
+import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
 
 final purpleLogo = MenoAssets.images.logo.menoPurple;
 final whiteLogo = MenoAssets.images.logo.menoWhite;
