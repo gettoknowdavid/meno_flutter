@@ -1,4 +1,4 @@
-part of 'session.dart';
+import 'package:meno_flutter/src/features/auth/auth.dart';
 
 sealed class SessionState {
   const SessionState();
