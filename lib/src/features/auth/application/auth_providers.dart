@@ -1,4 +1,5 @@
 import 'package:meno_flutter/src/config/config.dart';
+import 'package:meno_flutter/src/config/env/env.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/services/services.dart';
 import 'package:riverpod/riverpod.dart';
