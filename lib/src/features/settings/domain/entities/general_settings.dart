@@ -62,4 +62,7 @@ final class GeneralSettings with EquatableMixin {
     language,
     pushNotificationToken,
   ];
+
+  @override
+  bool get stringify => true;
 }

@@ -52,10 +52,7 @@ final class UserDto with EquatableMixin {
   ];
 
   @override
-  String toString() {
-    return '''
-UserDto{id=$id, fullName=$fullName, email=$email, bio=$bio, generalSettings=$generalSettings, role=$role, imageId=$imageId, imageUrl=$imageUrl, verified=$verified, emailAccountType=$emailAccountType}''';
-  }
+  bool get stringify => true;
 }
 
 extension UserDtoX on UserDto {

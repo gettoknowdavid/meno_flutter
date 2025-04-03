@@ -46,6 +46,9 @@ final class GeneralSettingsDto with EquatableMixin {
     language,
     pushNotificationToken,
   ];
+
+  @override
+  bool get stringify => true;
 }
 
 extension GeneralSettingsX on GeneralSettingsDto {

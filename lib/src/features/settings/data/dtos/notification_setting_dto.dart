@@ -23,6 +23,9 @@ final class NotificationSettingDto with EquatableMixin {
 
   @override
   List<Object?> get props => [text, type, value];
+
+  @override
+  bool get stringify => true;
 }
 
 extension NotificationSettingX on NotificationSettingDto {

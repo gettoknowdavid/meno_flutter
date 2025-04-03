@@ -15,9 +15,7 @@ final class UserCredential with EquatableMixin {
   }
 
   @override
-  String toString() {
-    return 'UserCredential{token=$token, user=$user}';
-  }
+  bool get stringify => true;
 }
 
 extension UserCrendentialX on UserCredential {

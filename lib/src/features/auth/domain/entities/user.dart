@@ -68,11 +68,8 @@ final class User with EquatableMixin {
     emailAccountType,
   ];
 
-@override
-String toString() {
-    return '''
-User{id=$id, fullName=$fullName, email=$email, bio=$bio, generalSettings=$generalSettings, role=$role, imageId=$imageId, imageUrl=$imageUrl, verified=$verified, emailAccountType=$emailAccountType}''';
-  }
+  @override
+  bool get stringify => true;
 }
 
 extension UserX on User {

@@ -6,8 +6,7 @@ import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
 
 class OnboardingTitle extends StatelessWidget {
-  const 
-  OnboardingTitle({required this.title, super.key});
+  const OnboardingTitle({required this.title, super.key});
   final String title;
 
   @override
@@ -37,7 +36,6 @@ class OnboardingTitle extends StatelessWidget {
   }
 }
 
-
 class OnboardingDescription extends StatelessWidget {
   const OnboardingDescription({required this.desc, super.key});
   final String desc;
@@ -56,7 +54,6 @@ class OnboardingDescription extends StatelessWidget {
     );
   }
 }
-
 
 class OnboardingWidget extends StatelessWidget {
   const OnboardingWidget({required this.onboarding, super.key});

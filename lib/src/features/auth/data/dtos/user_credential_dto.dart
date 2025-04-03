@@ -20,9 +20,7 @@ class UserCredentialDto with EquatableMixin {
   List<Object?> get props => [token, user];
 
   @override
-  String toString() {
-    return 'UserCredentialDto{token=$token, user=$user}';
-  }
+  bool get stringify => true;
 }
 
 extension UserCrendentialDtoX on UserCredentialDto {

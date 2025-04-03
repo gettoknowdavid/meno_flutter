@@ -11,8 +11,6 @@ final class NotificationSetting with EquatableMixin {
   final String type;
   final bool value;
 
-  @override
-  List<Object?> get props => [text, type, value];
   NotificationSetting copyWith({String? text, String? type, bool? value}) {
     return NotificationSetting(
       text: text ?? this.text,
@@ -20,4 +18,10 @@ final class NotificationSetting with EquatableMixin {
       value: value ?? this.value,
     );
   }
+
+  @override
+  List<Object?> get props => [text, type, value];
+
+  @override
+  bool get stringify => true;
 }
