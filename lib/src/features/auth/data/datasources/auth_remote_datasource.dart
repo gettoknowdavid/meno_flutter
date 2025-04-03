@@ -31,6 +31,7 @@ abstract class AuthRemoteDatasource {
   /// [UserCredentialDto] object or an `error` object.
   @POST('/api/v1/users/signup')
   @MultiPart()
+  @Extra({'requestType': RequestType.unprotected})
   Future<Either<AuthException, BaseResponse<UserCredentialDto>>> register({
     @Part() required String fullName,
     @Part() required String email,

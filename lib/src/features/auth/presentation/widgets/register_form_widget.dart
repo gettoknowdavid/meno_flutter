@@ -140,9 +140,8 @@ class TermsOfServiceCheckbox extends HookConsumerWidget {
     final focusNode = useFocusNode();
 
     return MenoCheckbox(
-      value: terms.value,
+      value: terms.value ?? false,
       focusNode: focusNode,
-      isError: terms.isNotValid,
       validator: (value) => terms.validator(value ?? false)?.text,
       onChanged: ref.read(registerFormProvider.notifier).onTermsChanged,
       label: Row(

@@ -30,7 +30,7 @@ class MenoAppView extends StatelessWidget {
       title: 'Meno',
       theme: MenoTheme.light,
       darkTheme: MenoTheme.dark,
-      // themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: MenoSnackBar.key,
       routerConfig: routerConfig,

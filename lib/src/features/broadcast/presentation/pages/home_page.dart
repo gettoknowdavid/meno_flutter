@@ -4,12 +4,14 @@ import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/config/session/session.dart';
 
 class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+  const HomePage({this.title = 'Home', super.key});
+
+  final String title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: MenoTopBar.secondary(title: 'Home'),
+      appBar: MenoTopBar.secondary(title: title),
       body: Center(
         child: MenoPrimaryButton(
           size: MenoSize.lg,
