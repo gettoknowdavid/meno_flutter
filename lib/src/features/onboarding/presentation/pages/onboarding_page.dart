@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/features/auth/auth.dart' show RegisterPage;
+import 'package:meno_flutter/src/features/auth/auth.dart' show RegisterWebView;
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
 import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -48,7 +48,9 @@ class OnboardingWebView extends StatelessWidget {
         children: [
           const Expanded(
             child: SingleChildScrollView(
-              child: Center(child: SizedBox(width: 461, child: RegisterPage())),
+              child: Center(
+                child: SizedBox(width: 461, child: RegisterWebView()),
+              ),
             ),
           ),
           Flexible(
