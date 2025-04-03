@@ -3,9 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:meno_flutter/app.dart';
+import 'package:meno_flutter/src/services/services.dart'
+    show SharedPreferencesService, sharedPrefsProvider;
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) usePathUrlStrategy();
-  runApp(const ProviderScope(child: MenoApp()));
+
+  final prefs = await SharedPreferencesService.getInstance();
+
+  runApp(
+    ProviderScope(
+      overrides: [sharedPrefsProvider.overrideWithValue(prefs)],
+      child: const MenoApp(),
+    ),
+  );
 }
