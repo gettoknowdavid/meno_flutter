@@ -2,14 +2,12 @@
 //ignore_for_file: cascade_invocations, strict_raw_type
 
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:meno_flutter/src/config/config.dart';
-import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/services/services.dart';
 
 /// An interceptor for automatically adding an authorization token to requests
@@ -21,6 +19,7 @@ import 'package:meno_flutter/src/services/services.dart';
 /// valid token exists.
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({required SecureStorageService storage}) : _storage = storage;
+
   final SecureStorageService _storage;
 
   String? _cachedToken;
@@ -44,6 +43,7 @@ class AuthInterceptor extends Interceptor {
 
     // Remove current user if it's the same as the expired one
     await _storage.delete(AuthStorageKeys.currentUserId);
+    await _storage.delete(AuthStorageKeys.currentUserToken);
   }
 
   /// Retrieves the latest token from the [SecureStorageService]
@@ -52,18 +52,8 @@ class AuthInterceptor extends Interceptor {
       return _cachedToken;
     }
 
-    final userId = await _storage.read(AuthStorageKeys.currentUserId);
-    final allAccountsString = await _storage.read(AuthStorageKeys.allAccounts);
+    final token = await _storage.read(AuthStorageKeys.currentUserToken);
 
-    if (allAccountsString?.isEmpty ?? false) return null;
-
-    final decodedMap = jsonDecode(allAccountsString!) as Map<String, dynamic>;
-    final accountsMap = decodedMap.map<String, UserCredentialDto>((key, value) {
-      final userData = value as Map<String, dynamic>;
-      return MapEntry(key, UserCredentialDto.fromJson(userData));
-    });
-
-    final token = accountsMap[userId]?.token;
     if (token != null && !JwtDecoder.isExpired(token)) {
       return _cachedToken = token;
     } else {
@@ -104,11 +94,5 @@ class AuthInterceptor extends Interceptor {
       options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
     return super.onRequest(options, handler);
-  }
-
-  @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    log(response.data?.toString() ?? 'Nothing returned');
-    super.onResponse(response, handler);
   }
 }
