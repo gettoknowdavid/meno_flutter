@@ -14,8 +14,10 @@ class AuthLocalDatasource {
   final SecureStorageService _storage;
 
   final Map<String, UserCredentialDto> _cachedAccounts = {};
+
   final _currentAccountController =
       StreamController<UserCredentialDto?>.broadcast();
+
   final _allAccountsController =
       StreamController<Map<String, UserCredentialDto>>.broadcast();
 
@@ -37,6 +39,25 @@ class AuthLocalDatasource {
       });
     } on Exception {
       _currentAccountController.add(null);
+    }
+  }
+
+  Future<void> switchAccount(UserCredentialDto credentialDto) async {
+    _currentAccountController.add(credentialDto);
+
+    final userId = credentialDto.user.id;
+    final token = credentialDto.token;
+
+    try {
+      // Store the user's id
+      await _storage.write(AuthStorageKeys.currentUserId, value: userId);
+
+      // Store the user's authentication token
+      await _storage.write(AuthStorageKeys.currentUserToken, value: token);
+
+      return;
+    } on Exception {
+      rethrow;
     }
   }
 
@@ -123,6 +144,7 @@ class AuthLocalDatasource {
   Future<void> logout() async {
     _currentAccountController.add(null);
     await _storage.delete(AuthStorageKeys.currentUserId);
+    await _storage.delete(AuthStorageKeys.currentUserToken);
   }
 
   Future<void> removeAccount([String? userId]) async {

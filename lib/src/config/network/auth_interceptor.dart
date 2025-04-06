@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart' hide Headers;
-import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/services/services.dart';
@@ -22,15 +21,8 @@ class AuthInterceptor extends Interceptor {
 
   final SecureStorageService _storage;
 
-  String? _cachedToken;
-
-  @visibleForTesting
-  String? get cachedToken => _cachedToken;
-
   /// Removes only the expired user from storage without affecting others
   Future<void> _forceLogout() async {
-    _cachedToken = null;
-
     final currentUserId = await _storage.read(AuthStorageKeys.currentUserId);
     final accountsJson = await _storage.read(AuthStorageKeys.allAccounts);
 
@@ -48,14 +40,9 @@ class AuthInterceptor extends Interceptor {
 
   /// Retrieves the latest token from the [SecureStorageService]
   Future<String?> _getToken() async {
-    if (_cachedToken != null && !JwtDecoder.isExpired(_cachedToken!)) {
-      return _cachedToken;
-    }
-
     final token = await _storage.read(AuthStorageKeys.currentUserToken);
-
     if (token != null && !JwtDecoder.isExpired(token)) {
-      return _cachedToken = token;
+      return token;
     } else {
       await _forceLogout();
       return null;

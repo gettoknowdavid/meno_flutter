@@ -36,7 +36,7 @@ class MyProfileContent extends HookConsumerWidget {
     final tabController = useTabController(initialLength: 4);
     if (error != null) return ProfileErrorWidget(error: error!);
     return RefreshIndicator(
-      onRefresh: () => ref.refresh(myProfileProvider.future),
+      onRefresh: () async => ref.invalidate(myProfileProvider),
       child: ProfileContent(
         profile: profile!,
         titleWidget: _TitleWidget(isLoading: isLoading, profile: profile!),

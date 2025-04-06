@@ -37,5 +37,5 @@ abstract class IAuthFacade {
   /// Switches to a different stored account. Returns an Either with success
   /// [UserCredential] or failure [AuthException] if the account isn't found or
   /// there's an issue.
-  Future<void> switchAccount(Id id);
+  Future<Either<AuthException, Unit>> switchAccount(UserCredential credential);
 }
