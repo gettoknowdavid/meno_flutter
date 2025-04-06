@@ -14,20 +14,29 @@ class AuthLocalDatasource {
   final SecureStorageService _storage;
 
   final Map<String, UserCredentialDto> _cachedAccounts = {};
-  final _controller = StreamController<UserCredentialDto?>.broadcast();
+  final _currentAccountController =
+      StreamController<UserCredentialDto?>.broadcast();
+  final _allAccountsController =
+      StreamController<Map<String, UserCredentialDto>>.broadcast();
 
   Stream<UserCredentialDto?> get authStateChanges {
-    return _controller.stream.asBroadcastStream();
+    return _currentAccountController.stream.asBroadcastStream();
+  }
+
+  Stream<Map<String, UserCredentialDto>> get allAccountsStream {
+    return _allAccountsController.stream.asBroadcastStream();
   }
 
   Future<void> _initialize() async {
     try {
-      await getAllAccounts().whenComplete(() async {
+      await getAllAccounts().then((allAccounts) async {
+        _allAccountsController.add(allAccounts);
+
         final currentAccount = await getCurrentAccount();
-        _controller.add(currentAccount);
+        _currentAccountController.add(currentAccount);
       });
     } on Exception {
-      _controller.add(null);
+      _currentAccountController.add(null);
     }
   }
 
@@ -35,12 +44,16 @@ class AuthLocalDatasource {
     UserCredentialDto credential, {
     bool rememberMe = false,
   }) async {
-    _controller.add(credential);
+    _currentAccountController.add(credential);
 
     final userId = credential.user.id;
+    final token = credential.token;
     try {
       // Store the user's id
       await _storage.write(AuthStorageKeys.currentUserId, value: userId);
+
+      // Store the user's authentication token
+      await _storage.write(AuthStorageKeys.currentUserToken, value: token);
 
       if (rememberMe) {
         // Store the current user's data for without token for easy login
@@ -57,11 +70,12 @@ class AuthLocalDatasource {
   }
 
   Future<void> clearAllAccounts() async {
-    _controller.add(null);
+    _currentAccountController.add(null);
     _cachedAccounts.clear();
     try {
       await _storage.delete(AuthStorageKeys.allAccounts);
       await _storage.delete(AuthStorageKeys.currentUserId);
+      await _storage.delete(AuthStorageKeys.currentUserToken);
       await _storage.delete(AuthStorageKeys.rememberedUser);
     } on Exception {
       rethrow;
@@ -106,14 +120,20 @@ class AuthLocalDatasource {
     return getAccountById(userId);
   }
 
+  Future<void> logout() async {
+    _currentAccountController.add(null);
+    await _storage.delete(AuthStorageKeys.currentUserId);
+  }
+
   Future<void> removeAccount([String? userId]) async {
-    _controller.add(null);
+    _currentAccountController.add(null);
     try {
       if (userId == null) {
         final currentUserId = await getAuthenticatedUserId();
         _cachedAccounts.remove(currentUserId);
 
         await _storage.delete(AuthStorageKeys.currentUserId);
+        await _storage.delete(AuthStorageKeys.currentUserToken);
         await _saveAccountsMap(_cachedAccounts);
       } else {
         _cachedAccounts.remove(userId);
@@ -134,6 +154,6 @@ class AuthLocalDatasource {
   }
 
   Future<void> dispose() async {
-    await _controller.close();
+    await _currentAccountController.close();
   }
 }

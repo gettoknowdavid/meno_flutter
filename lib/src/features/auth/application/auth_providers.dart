@@ -26,3 +26,8 @@ IAuthFacade authFacade(Ref ref) {
 Stream<UserCredential?> authStateChanges(Ref ref) {
   return ref.watch(authFacadeProvider).authStateChanges;
 }
+
+@riverpod
+Stream<Map<String, UserCredential>> allAccounts(Ref ref) {
+  return ref.watch(authFacadeProvider).allAccounts;
+}
