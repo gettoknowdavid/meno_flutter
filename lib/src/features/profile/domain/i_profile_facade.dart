@@ -14,6 +14,7 @@ abstract class IProfileFacade {
   /// [ImageFile] : Image of the user
   ///
   Future<Either<ProfileException, Profile>> editProfile({
+    required Id id,
     FullName? fullName,
     Bio? bio,
     ImageFile? image,
@@ -23,7 +24,7 @@ abstract class IProfileFacade {
   ///
   Future<Either<ProfileException, Profile>> getProfile(Id id);
 
-  Future<Either<ProfileException, List<Profile?>>> getProfiles({
+  Future<Either<ProfileException, PaginatedList<Profile?>>> getProfiles({
     /// Searches for users with a name that partially or fully match the
     /// keyword. Example: `John`
     ///
@@ -66,7 +67,7 @@ abstract class IProfileFacade {
 
   /// Returns a list of [Profile]s that are subscribed to your account
   ///
-  Future<Either<ProfileException, List<Profile?>>> getSubscribers({
+  Future<Either<ProfileException, PaginatedList<Profile?>>> getSubscribers({
     /// The [Profile] or [User] id of the person you are subscribed to
     ///
     required Id subscriptionId,
@@ -99,7 +100,7 @@ abstract class IProfileFacade {
 
   /// Returns a list of [Profile]s your account is subscribed to
   ///
-  Future<Either<ProfileException, List<Profile?>>> getSubscriptionss({
+  Future<Either<ProfileException, PaginatedList<Profile?>>> getSubscriptionss({
     /// The [Profile] or [User] id of the subscriber
     ///
     required Id subscriberId,

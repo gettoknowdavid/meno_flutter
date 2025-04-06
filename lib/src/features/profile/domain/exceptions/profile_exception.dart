@@ -7,6 +7,10 @@ final class ProfileServerException extends ProfileException {
   const ProfileServerException([super.message = 'Server error.']);
 }
 
+final class ProfileTimeoutException extends ProfileException {
+  const ProfileTimeoutException([super.message = 'The request timed out.']);
+}
+
 final class ProfileUnknownException extends ProfileException {
   const ProfileUnknownException([super.message = 'Unknown error.']);
 }

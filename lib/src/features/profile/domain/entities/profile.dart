@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:meno_flutter/src/features/auth/auth.dart' show User;
 import 'package:meno_flutter/src/features/profile/domain/entities/profile_stats.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 
@@ -6,7 +7,7 @@ final class Profile with EquatableMixin {
   const Profile({
     required this.id,
     required this.fullName,
-    required this.bio,
+    this.bio,
     this.stats,
     this.imageUrl,
     this.role,
@@ -17,9 +18,21 @@ final class Profile with EquatableMixin {
     this.subscribed,
   });
 
+  factory Profile.fake() => _fakeProfile;
+
+  factory Profile.fromUserEntity(User user) {
+    return Profile(
+      id: user.id,
+      fullName: user.fullName,
+      bio: user.bio,
+      role: user.role,
+      imageUrl: user.imageUrl,
+    );
+  }
+
   final Id id;
   final FullName fullName;
-  final Bio bio;
+  final Bio? bio;
   final ProfileStats? stats;
   final String? imageUrl;
   final AuthRole? role;
@@ -72,3 +85,29 @@ final class Profile with EquatableMixin {
     isSubscribedToUser,
   ];
 }
+
+extension ProfileX on Profile {
+  Profile get stripped {
+    return Profile(
+      id: id,
+      fullName: fullName,
+      bio: bio,
+      imageUrl: imageUrl,
+      stats: stats,
+    );
+  }
+}
+
+final _fakeProfile = Profile(
+  id: Id.fromString('str'),
+  fullName: const FullName.pure('New Birth Group'),
+  bio: const Bio.pure(
+    '''This is a group that is committed to the growth of those that have been re-birthed in Christ. The vision of this group is to bring to light the possibilities of the New Creation in Christ via the teaching of the word, prayer-- equipping each member for the work of ministry, that each may walk worthy of the Lord in all things.''',
+  ),
+  imageUrl: '',
+  stats: const ProfileStats(
+    broadcasts: 14,
+    subscribers: 300,
+    subscriptions: 15,
+  ),
+);

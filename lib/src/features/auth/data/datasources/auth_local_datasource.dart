@@ -60,7 +60,9 @@ class AuthLocalDatasource {
     _controller.add(null);
     _cachedAccounts.clear();
     try {
-      await _storage.deleteAll();
+      await _storage.delete(AuthStorageKeys.allAccounts);
+      await _storage.delete(AuthStorageKeys.currentUserId);
+      await _storage.delete(AuthStorageKeys.rememberedUser);
     } on Exception {
       rethrow;
     }

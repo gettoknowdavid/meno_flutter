@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
+import 'package:meno_flutter/src/features/profile/presentation/pages/my_profile_page.dart';
+import 'package:meno_flutter/src/routing/meno_route_notifier.dart';
+import 'package:meno_flutter/src/routing/meno_route_state.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,18 +18,18 @@ final _mainLayoutKey = GlobalKey<NavigatorState>(debugLabel: 'main-layout');
 
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  final session = ref.watch(sessionProvider);
+  final menoRoute = ref.watch(menoRouteProvider);
 
   FutureOr<String?> redirect(BuildContext context, GoRouterState state) {
-    final isAllowedPath = session.value.allowedPaths.contains(state.fullPath);
-    if (!isAllowedPath) return session.value.redirectPath;
+    final isAllowedPath = menoRoute.value.allowedPaths.contains(state.fullPath);
+    if (!isAllowedPath) return menoRoute.value.redirectPath;
     return null;
   }
 
   return GoRouter(
     initialLocation: const HomeRoute().location,
     navigatorKey: _rootNavigatorKey,
-    refreshListenable: session,
+    refreshListenable: menoRoute,
     redirect: redirect,
     routes: $appRoutes,
   );
@@ -106,9 +108,9 @@ class PasswordRecoveryRoute extends GoRouteData {
     TypedStatefulShellBranch<NotesShellBranchData>(
       routes: <TypedRoute<RouteData>>[TypedGoRoute<NotesRoute>(path: '/notes')],
     ),
-    TypedStatefulShellBranch<ProfileShellBranchData>(
+    TypedStatefulShellBranch<MyProfileShellBranchData>(
       routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<ProfileRoute>(path: '/profile'),
+        TypedGoRoute<MyProfileRoute>(path: '/profile'),
       ],
     ),
   ],
@@ -159,51 +161,13 @@ class NotesRoute extends GoRouteData {
   Widget build(context, state) => const HomePage(title: 'Notes');
 }
 
-class ProfileShellBranchData extends StatefulShellBranchData {
-  const ProfileShellBranchData();
+class MyProfileShellBranchData extends StatefulShellBranchData {
+  const MyProfileShellBranchData();
 }
 
-class ProfileRoute extends GoRouteData {
-  const ProfileRoute();
+class MyProfileRoute extends GoRouteData {
+  const MyProfileRoute();
 
   @override
-  Widget build(context, state) => const HomePage(title: 'Profile');
-}
-
-extension SessionX on SessionState {
-  String get redirectPath {
-    return switch (this) {
-      SessionOnboarding() => const OnboardingRoute().location,
-      SessionUnauthenticated() => const LoginRoute().location,
-      SessionAuthenticated() => const HomeRoute().location,
-      SessionLoadInProgress() => const LoadingRoute().location,
-    };
-  }
-
-  Set<String> get allowedPaths {
-    return switch (this) {
-      SessionOnboarding() => {
-        const OnboardingRoute().location,
-        const LoginRoute().location,
-        const RegisterRoute().location,
-        const VerifyEmailRoute().location,
-        const ResetPasswordRoute().location,
-        const PasswordRecoveryRoute().location,
-      },
-      SessionUnauthenticated() => {
-        const LoginRoute().location,
-        const RegisterRoute().location,
-        const VerifyEmailRoute().location,
-        const ResetPasswordRoute().location,
-        const PasswordRecoveryRoute().location,
-      },
-      SessionAuthenticated() => {
-        const HomeRoute().location,
-        const DiscoverRoute().location,
-        const NotesRoute().location,
-        const ProfileRoute().location,
-      },
-      _ => {const LoadingRoute().location},
-    };
-  }
+  Widget build(context, state) => const MyProfilePage();
 }

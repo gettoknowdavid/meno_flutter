@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/config/session/session_notifier.dart';
+import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
+import 'package:meno_flutter/src/features/profile/profile.dart';
 import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -12,10 +13,12 @@ class MenoApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final routerConfig = ref.watch(routerProvider);
     ref
       ..watch(authFacadeProvider)
-      ..watch(sessionProvider);
+      ..watch(menoRouteProvider)
+      ..watch(sessionProvider)
+      ..watch(myProfileProvider);
+    final routerConfig = ref.watch(routerProvider);
     return MenoAppView(routerConfig: routerConfig);
   }
 }

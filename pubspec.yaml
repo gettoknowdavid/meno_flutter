@@ -7,6 +7,7 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  cached_network_image: ^3.4.1
   dartz: ^0.10.1
   dio: ^5.8.0+1
   envied: ^1.1.1
@@ -29,12 +30,14 @@ dependencies:
   meno_design_system:
     path: ../meno_design_system
   meta: ^1.16.0
+  readmore: ^3.0.0
   responsive_framework: ^1.5.1
   retrofit: ^4.4.2
   riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
   rxdart: ^0.28.0
   shared_preferences: ^2.5.3
+  skeletonizer: ^1.4.3
   uuid: ^4.5.1
 
 dev_dependencies:
