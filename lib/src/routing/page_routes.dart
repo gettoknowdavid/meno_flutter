@@ -3,7 +3,7 @@ import 'package:meno_design_system/meno_design_system.dart';
 
 class ModalPage<T> extends Page<void> {
   const ModalPage({
-    required this.child,
+    required this.builder,
     super.key,
     this.constraints,
     this.isScrollControlled = false,
@@ -12,7 +12,7 @@ class ModalPage<T> extends Page<void> {
     this.enableDrag = true,
   });
 
-  final Widget child;
+  final WidgetBuilder builder;
   final BoxConstraints? constraints;
   final bool isScrollControlled;
   final bool useRootNavigator;
@@ -22,9 +22,9 @@ class ModalPage<T> extends Page<void> {
   @override
   Route<T> createRoute(BuildContext context) {
     return ModalBottomSheetRoute<T>(
-      builder: (context) => SafeArea(child: Material(child: child)),
+      builder: builder,
       constraints: constraints,
-      backgroundColor: MenoColorScheme.of(context).backgroundDefault,
+      backgroundColor: MenoColorScheme.of(context).sectionPrimary,
       isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
       enableDrag: enableDrag,

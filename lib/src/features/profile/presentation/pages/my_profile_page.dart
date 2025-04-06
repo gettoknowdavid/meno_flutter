@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/features/profile/profile.dart'
-    show Profile, ProfileContent, ProfileErrorWidget, myProfileProvider;
+import 'package:meno_flutter/src/features/profile/profile.dart';
+import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class MyProfilePage extends HookConsumerWidget {
@@ -19,7 +20,7 @@ class MyProfilePage extends HookConsumerWidget {
   }
 }
 
-class MyProfileContent extends ConsumerWidget {
+class MyProfileContent extends HookConsumerWidget {
   const MyProfileContent({
     this.profile,
     this.error,
@@ -32,6 +33,7 @@ class MyProfileContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tabController = useTabController(initialLength: 4);
     if (error != null) return ProfileErrorWidget(error: error!);
     return RefreshIndicator(
       onRefresh: () => ref.refresh(myProfileProvider.future),
@@ -39,6 +41,11 @@ class MyProfileContent extends ConsumerWidget {
         profile: profile!,
         titleWidget: _TitleWidget(isLoading: isLoading, profile: profile!),
         isLoading: isLoading,
+        bottomWidget: ProfileTabBar(
+          isLoading: isLoading,
+          tabController: tabController,
+        ),
+        bodyWidget: ProfileTabBarView(tabController: tabController),
       ),
     );
   }
@@ -58,23 +65,26 @@ class _TitleWidget extends StatelessWidget {
       child: ColoredBox(
         color: colors.backgroundDefault,
         child: MenoHeader.secondary(
-          title: Row(
-            children: [
-              MenoText.heading3(
-                profile.fullName.value,
-                weight: MenoFontWeight.bold,
-              ),
-              const MenoSpacer.h(Insets.sm),
-              const Icon(MIcons.chevron_down, size: 22),
-            ],
+          title: InkWell(
+            onTap: () => const SwitchAccountModalRoute().push(context),
+            child: Row(
+              children: [
+                MenoText.heading3(
+                  profile.fullName.value,
+                  weight: MenoFontWeight.bold,
+                ),
+                const MenoSpacer.h(Insets.sm),
+                const Icon(MIcons.chevron_down, size: 22),
+              ],
+            ),
           ),
           actions: [
             SizedBox.square(
               dimension: 24,
               child: IconButton(
-                onPressed: () {},
                 color: colors.buttonFill,
                 icon: const Icon(MIcons.settings, size: 24),
+                onPressed: () {},
               ),
             ),
           ],

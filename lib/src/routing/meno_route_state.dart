@@ -49,12 +49,14 @@ extension MenoRouteX on MenoRouteState {
         const VerifyEmailRoute().location,
         const ResetPasswordRoute().location,
         const PasswordRecoveryRoute().location,
+        const SwitchAccountModalRoute().location,
       },
       MenoRouteAuthenticated() => {
         const HomeRoute().location,
         const DiscoverRoute().location,
         const NotesRoute().location,
         const MyProfileRoute().location,
+        const SwitchAccountModalRoute().location,
       },
       _ => {const LoadingRoute().location},
     };
