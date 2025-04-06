@@ -3,6 +3,9 @@ import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 
 abstract class IAuthFacade {
+  /// Returns all the [UserCredential]s of stored in the app secure storage.
+  Stream<Map<String, UserCredential>> get allAccounts;
+
   /// Returns the [UserCredential] of the currently signed-in account (if any)
   Stream<UserCredential?> get authStateChanges;
 

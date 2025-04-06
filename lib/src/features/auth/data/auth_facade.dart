@@ -24,8 +24,8 @@ class AuthFacade implements IAuthFacade {
       password: password.value,
     );
 
-    return response.fold(Left.new, (response) {
-      _local.addAccount(response.data!);
+    return response.fold(Left.new, (response) async {
+      await _local.addAccount(response.data!);
       return right(unit);
     });
   }
@@ -43,8 +43,8 @@ class AuthFacade implements IAuthFacade {
       password: password.value,
     );
 
-    return response.fold(Left.new, (response) {
-      _local.addAccount(response.data!);
+    return response.fold(Left.new, (response) async {
+      await _local.addAccount(response.data!);
       return right(unit);
     });
   }
@@ -56,10 +56,19 @@ class AuthFacade implements IAuthFacade {
   }
 
   @override
-  Future<void> logout() => _local.removeAccount();
+  Future<void> logout() => _local.logout();
 
   @override
   Stream<UserCredential?> get authStateChanges {
     return _local.authStateChanges.map((e) => e?.toDomain);
+  }
+
+  @override
+  Stream<Map<String, UserCredential>> get allAccounts {
+    return _local.allAccountsStream.map((dtoMap) {
+      final domainMap = <String, UserCredential>{};
+      dtoMap.forEach((key, dto) => domainMap[key] = dto.toDomain);
+      return domainMap;
+    });
   }
 }
