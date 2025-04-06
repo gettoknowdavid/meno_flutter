@@ -8,7 +8,7 @@ part 'my_profile_provider.g.dart';
 class MyProfile extends _$MyProfile {
   @override
   Future<Profile> build() async {
-    final id = ref.watch(sessionProvider).user.id;
+    final id = ref.watch(sessionProvider).credential.user.id;
     final result = await ref.read(profileFacadeProvider).getProfile(id);
     return result.fold((exception) => throw exception, (profile) => profile);
   }

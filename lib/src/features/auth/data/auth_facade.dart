@@ -50,9 +50,16 @@ class AuthFacade implements IAuthFacade {
   }
 
   @override
-  Future<void> switchAccount(Id id) {
-    // TODO: implement switchAccount
-    throw UnimplementedError();
+  Future<Either<AuthException, Unit>> switchAccount(
+    UserCredential credential,
+  ) async {
+    final credentialDto = credential.toDto;
+    try {
+      await _local.switchAccount(credentialDto);
+      return right(unit);
+    } on Exception catch (e) {
+      return left(AuthExceptionWithMessage(e.toString()));
+    }
   }
 
   @override
