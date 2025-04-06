@@ -6,6 +6,8 @@ class ProfileContent extends HookWidget {
   const ProfileContent({
     required this.profile,
     required this.titleWidget,
+    required this.bottomWidget,
+    required this.bodyWidget,
     this.isLoading = false,
     super.key,
   });
@@ -13,13 +15,12 @@ class ProfileContent extends HookWidget {
   final Profile profile;
   final Widget titleWidget;
   final bool isLoading;
+  final PreferredSizeWidget bottomWidget;
+  final Widget bodyWidget;
 
   @override
   Widget build(BuildContext context) {
-    final tabController = useTabController(initialLength: 4);
-
     final isBioCollapsed = useState(true);
-
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
@@ -42,20 +43,13 @@ class ProfileContent extends HookWidget {
                 ),
               ),
             ),
-            bottom: ProfileTabBar(
-              isLoading: isLoading,
-              tabController: tabController,
-            ),
+            bottom: bottomWidget,
           ),
         ];
       },
       body: CustomScrollView(
         primary: false,
-        slivers: [
-          SliverFillRemaining(
-            child: ProfileTabBarView(tabController: tabController),
-          ),
-        ],
+        slivers: [SliverFillRemaining(child: bodyWidget)],
       ),
     );
   }

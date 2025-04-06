@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/features/auth/auth.dart';
+import 'package:meno_flutter/src/features/auth/presentation/pages/pages.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
-import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
-import 'package:meno_flutter/src/features/profile/presentation/pages/my_profile_page.dart';
-import 'package:meno_flutter/src/routing/meno_route_notifier.dart';
-import 'package:meno_flutter/src/routing/meno_route_state.dart';
+import 'package:meno_flutter/src/features/onboarding/onboarding.dart'
+    show OnboardingPage;
+import 'package:meno_flutter/src/features/profile/presentation/presentation.dart';
+import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -33,6 +33,23 @@ GoRouter router(Ref ref) {
     redirect: redirect,
     routes: $appRoutes,
   );
+}
+
+@TypedGoRoute<SwitchAccountModalRoute>(
+  path: '/switch-account',
+  name: 'Switch Account',
+)
+class SwitchAccountModalRoute extends GoRouteData {
+  const SwitchAccountModalRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return ModalPage<void>(
+      builder: (context) => const SwicthAccountModal(),
+      useRootNavigator: true,
+      isScrollControlled: true,
+    );
+  }
 }
 
 @TypedGoRoute<LoadingRoute>(path: '/loading', name: 'Loading')

@@ -1,4 +1,5 @@
 export 'account_status_widget.dart';
+export 'modals/modals.dart';
 export 'profile_bio_widget.dart';
 export 'profile_content.dart';
 export 'profile_details_widget.dart';
