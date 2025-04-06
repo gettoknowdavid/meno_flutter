@@ -73,7 +73,7 @@ extension ProfileToDto on Profile {
     return ProfileDto(
       id: id.getOrElse(''),
       fullName: fullName.value,
-      bio: bio.value,
+      bio: bio?.value,
       stats: stats?.toDto,
       imageUrl: imageUrl,
       isSubscribedToUser: isSubscribedToUser,
@@ -100,6 +100,16 @@ extension ProfileToDomain on ProfileDto {
       numberOfSubscriptions: numberOfSubscriptions,
       role: role,
       subscribed: subscribed,
+    );
+  }
+
+  ProfileDto get stripped {
+    return ProfileDto(
+      id: id,
+      fullName: fullName,
+      bio: bio,
+      imageUrl: imageUrl,
+      stats: stats,
     );
   }
 }
