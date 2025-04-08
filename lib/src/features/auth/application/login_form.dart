@@ -1,3 +1,6 @@
+//
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:formz/formz.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
@@ -11,11 +14,19 @@ class LoginForm extends _$LoginForm {
   LoginFormState build() => const LoginFormState();
 
   void onEmailChanged(String value) {
-    state = state.copyWith(email: Email.dirty(value));
+    state = state.copyWith(
+      email: Email.dirty(value),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   void onPasswordChanged(String value) {
-    state = state.copyWith(password: Password.dirty(value));
+    state = state.copyWith(
+      password: Password.dirty(value),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   Future<void> submit() async {

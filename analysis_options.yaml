@@ -8,6 +8,7 @@ analyzer:
     - '**/feature**/*_test.dart'
   errors:
     avoid_positional_boolean_parameters: ignore
+    cascade_invocations: ignore
     duplicate_ignore: ignore
     inference_failure_on_function_invocation: ignore
     library_private_types_in_public_api: ignore

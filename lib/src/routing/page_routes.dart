@@ -6,8 +6,8 @@ class ModalPage<T> extends Page<void> {
     required this.builder,
     super.key,
     this.constraints,
-    this.isScrollControlled = false,
-    this.useRootNavigator = false,
+    this.isScrollControlled = true,
+    this.useRootNavigator = true,
     this.isDismissible = true,
     this.enableDrag = true,
   });

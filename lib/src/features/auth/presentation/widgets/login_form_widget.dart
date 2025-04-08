@@ -3,7 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
-import 'package:meno_flutter/src/features/onboarding/data/data.dart';
+import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
+import 'package:meno_flutter/src/routing/router.dart';
+import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 
 class LoginFormWidget extends HookConsumerWidget {
@@ -26,8 +28,9 @@ class LoginFormWidget extends HookConsumerWidget {
             size: message.contains('\n') ? MenoSize.md : MenoSize.sm,
           );
         case MenoFormStatus.success:
-          if (!ref.read(onboardingFacadeProvider).onboardingComplete) {
-            await ref.read(onboardingFacadeProvider).completeOnboarding();
+          if (!ref.read(onboardingNotifierProvider)) {
+            await ref.read(onboardingNotifierProvider.notifier).complete();
+            ref.read(routerProvider).go(const HomeRoute().location);
           }
       }
     });
@@ -69,7 +72,6 @@ class LoginEmailField extends HookConsumerWidget {
       label: 'Email address',
       prefixIcon: MIcons.mail,
       size: MenoSize.lg,
-      required: false,
       enabled: status != MenoFormStatus.inProgress,
       keyboardType: TextInputType.emailAddress,
       focusNode: focusNode,
@@ -94,7 +96,6 @@ class LoginPasswordField extends HookConsumerWidget {
       isPassword: true,
       prefixIcon: MIcons.key,
       size: MenoSize.lg,
-      required: false,
       enabled: status != MenoFormStatus.inProgress,
       focusNode: focusNode,
       onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,

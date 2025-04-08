@@ -12,4 +12,13 @@ class MyProfile extends _$MyProfile {
     final result = await ref.read(profileFacadeProvider).getProfile(id);
     return result.fold((exception) => throw exception, (profile) => profile);
   }
+
+  void optimistcallyUpdate(Profile profile) {
+    final updatedProfile = state.valueOrNull?.copyWith(
+      fullName: profile.fullName,
+      bio: profile.bio,
+      imageUrl: profile.imageUrl,
+    );
+    state = AsyncData(updatedProfile!);
+  }
 }

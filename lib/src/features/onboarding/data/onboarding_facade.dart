@@ -17,7 +17,7 @@ class OnboardingFacade implements IOnboardingFacade {
   final OnboardingLocalDatasource _local;
 
   @override
-  Future<void> completeOnboarding() => _local.completeOnboarding();
+  Future<bool> completeOnboarding() => _local.completeOnboarding();
 
   @override
   bool get onboardingComplete => _local.onboardingComplete;
