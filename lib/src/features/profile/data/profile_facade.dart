@@ -193,7 +193,7 @@ class ProfileFacade implements IProfileFacade {
 
     return switch (base.error) {
       final Map<String, dynamic> errors => ProfileValidationException(errors),
-      _ => ProfileExceptionWithMessage(base.message),
+      _ => ProfileExceptionWithMessage(base.message ?? 'Unknown error'),
     };
   }
 }
