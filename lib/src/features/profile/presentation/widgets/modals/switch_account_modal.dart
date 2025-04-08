@@ -12,12 +12,14 @@ class SwicthAccountModal extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = MenoColorScheme.of(context);
 
-    final credential = ref.watch(sessionProvider.select((s) => s.credential));
-    final accounts = ref.watch(sessionProvider.select((s) => s.accounts));
+    final session = ref.watch(sessionProvider);
 
     ref.listen(sessionProvider.select((s) => s.credential), (previous, next) {
       if (previous?.user.id != next.user.id) const MyProfileRoute().go(context);
     });
+
+    final accounts = session.accounts;
+    final credential = session.credential;
 
     return MenoModal(
       title: 'Switch account',
@@ -26,25 +28,7 @@ class SwicthAccountModal extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (accounts.length == 1) ...[
-              MenoPrimaryButton(
-                size: MenoSize.lg,
-                child: const Text('Log in to existing account'),
-                onPressed: () {
-                  ref.read(sessionProvider.notifier).logout();
-                  const LoginRoute().go(context);
-                },
-              ),
-              const MenoSpacer.v(4),
-              MenoTertiaryButton(
-                size: MenoSize.lg,
-                child: const Text('Create new account'),
-                onPressed: () {
-                  ref.read(sessionProvider.notifier).logout();
-                  const RegisterRoute().go(context);
-                },
-              ),
-            ] else ...[
+            if (session.accounts.length > 1) ...[
               ...accounts.entries.map((entry) {
                 final user = entry.value.user;
                 final selected = credential.user.id.getOrNull() == entry.key;
@@ -75,6 +59,24 @@ class SwicthAccountModal extends HookConsumerWidget {
                 headlineColor: colors.errorBase,
                 iconColor: colors.errorBase,
                 leading: const Icon(MIcons.log_out, size: 24),
+              ),
+            ] else ...[
+              MenoPrimaryButton(
+                size: MenoSize.lg,
+                child: const Text('Log in to existing account'),
+                onPressed: () {
+                  ref.read(sessionProvider.notifier).logout();
+                  const LoginRoute().go(context);
+                },
+              ),
+              const MenoSpacer.v(4),
+              MenoTertiaryButton(
+                size: MenoSize.lg,
+                child: const Text('Create new account'),
+                onPressed: () {
+                  ref.read(sessionProvider.notifier).logout();
+                  const RegisterRoute().go(context);
+                },
               ),
             ],
           ],
