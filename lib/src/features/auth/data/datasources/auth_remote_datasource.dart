@@ -72,6 +72,6 @@ AuthException _handleException<T>(DioException exception) {
 
   return switch (base.error) {
     final Map<String, dynamic> errors => AuthValidationException(errors),
-    _ => AuthExceptionWithMessage(base.message),
+    _ => AuthExceptionWithMessage(base.message ?? 'Unknown error'),
   };
 }

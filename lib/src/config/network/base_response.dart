@@ -6,10 +6,10 @@ part 'base_response.g.dart';
 @JsonSerializable(genericArgumentFactories: true)
 final class BaseResponse<T> with EquatableMixin {
   const BaseResponse({
-    required this.statusCode,
-    this.message = '',
-    this.success = false,
-    this.status = false,
+    this.statusCode,
+    this.message,
+    this.success,
+    this.status,
     this.data,
     this.path,
     this.error,
@@ -20,10 +20,10 @@ final class BaseResponse<T> with EquatableMixin {
     T Function(Object?) fromJsonT,
   ) => _$BaseResponseFromJson(json, fromJsonT);
 
-  final int statusCode;
-  final String message;
-  final bool success;
-  final bool status;
+  final int? statusCode;
+  final String? message;
+  final bool? success;
+  final bool? status;
   final T? data;
   final String? path;
   final dynamic error;
