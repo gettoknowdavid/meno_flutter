@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/auth/presentation/pages/pages.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
-import 'package:meno_flutter/src/features/onboarding/onboarding.dart'
-    show OnboardingPage;
+import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
+import 'package:meno_flutter/src/features/profile/application/edit_profile_form.dart';
 import 'package:meno_flutter/src/features/profile/presentation/presentation.dart';
 import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
@@ -18,12 +18,11 @@ final _mainLayoutKey = GlobalKey<NavigatorState>(debugLabel: 'main-layout');
 
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  final menoRoute = ref.watch(menoRouteProvider);
+  final menoRoute = ref.watch(menoRouteNotifierProvider);
 
   FutureOr<String?> redirect(BuildContext context, GoRouterState state) {
-    final isAllowedPath = menoRoute.value.allowedPaths.contains(state.fullPath);
-    if (!isAllowedPath) return menoRoute.value.redirectPath;
-    return null;
+    final isPathAllowed = menoRoute.value.allowedPaths.contains(state.fullPath);
+    return !isPathAllowed ? menoRoute.value.redirectPath : null;
   }
 
   return GoRouter(
@@ -49,6 +48,26 @@ class SwitchAccountModalRoute extends GoRouteData {
       useRootNavigator: true,
       isScrollControlled: true,
     );
+  }
+}
+
+@TypedGoRoute<EditProfileRoute>(path: '/edit-profile', name: 'Edit Profile')
+class EditProfileRoute extends GoRouteData {
+  const EditProfileRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return ModalPage<void>(
+      builder: (context) => const EditProfileModal(),
+      useRootNavigator: true,
+      isScrollControlled: true,
+    );
+  }
+
+  @override
+  FutureOr<bool> onExit(BuildContext context, GoRouterState state) {
+    ProviderScope.containerOf(context).invalidate(editProfileFormProvider);
+    return super.onExit(context, state);
   }
 }
 

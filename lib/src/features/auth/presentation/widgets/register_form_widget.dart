@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
+import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 
 class RegisterFormWidget extends HookConsumerWidget {
@@ -26,11 +27,13 @@ class RegisterFormWidget extends HookConsumerWidget {
             size: message.contains('\n') ? MenoSize.md : MenoSize.sm,
           );
         case MenoFormStatus.success:
-          if (!ref.read(onboardingFacadeProvider).onboardingComplete) {
-            await ref.read(onboardingFacadeProvider).completeOnboarding();
+          if (!ref.read(onboardingNotifierProvider)) {
+            await ref.read(onboardingNotifierProvider.notifier).complete();
+            ref.read(routerProvider).go(const HomeRoute().location);
           }
       }
     });
+
 
     return Form(
       key: formKey,

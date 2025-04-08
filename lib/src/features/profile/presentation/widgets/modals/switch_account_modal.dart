@@ -57,7 +57,7 @@ class SwicthAccountModal extends HookConsumerWidget {
                   selected: selected,
                   leading: MenoAvatar(
                     url: user.imageUrl,
-                    radius: MenoAvatarRadius.md,
+                    menoRadius: MenoAvatarRadius.md,
                   ),
                   onChanged: (cred) {
                     if (selected) return;

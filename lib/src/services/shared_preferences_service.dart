@@ -13,6 +13,8 @@ class SharedPreferencesService {
 
   Future<bool> delete(String key) => _pref.remove(key);
 
+  Future<bool> clear() => _pref.clear();
+
   bool hasKey(String key) => _pref.containsKey(key);
 
   dynamic read(String key) => _pref.get(key);

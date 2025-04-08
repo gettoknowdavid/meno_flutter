@@ -6,9 +6,11 @@ part 'onboarding_notifier.g.dart';
 @riverpod
 class OnboardingNotifier extends _$OnboardingNotifier {
   @override
-  bool build() => ref.read(onboardingFacadeProvider).onboardingComplete;
+  bool build() => ref.watch(onboardingFacadeProvider).onboardingComplete;
 
-  Future<void> completeOnboarding() async {
-    return ref.read(onboardingFacadeProvider).completeOnboarding();
+  Future<void> complete() async {
+    final facade = ref.read(onboardingFacadeProvider);
+    final result = await facade.completeOnboarding();
+    state = result;
   }
 }

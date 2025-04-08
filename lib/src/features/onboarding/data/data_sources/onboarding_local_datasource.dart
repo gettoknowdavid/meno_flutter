@@ -6,7 +6,7 @@ class OnboardingLocalDatasource {
     : _storage = storage;
   final SharedPreferencesService _storage;
 
-  Future<void> completeOnboarding() {
+  Future<bool> completeOnboarding() {
     return _storage.write(OnboardingStorageKeys.onboarding, value: '1');
   }
 
