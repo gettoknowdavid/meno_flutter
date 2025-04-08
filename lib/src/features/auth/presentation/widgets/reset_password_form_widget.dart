@@ -20,7 +20,6 @@ class ResetPasswordFormWidget extends HookWidget {
             label: 'Email address',
             prefixIcon: MIcons.mail,
             size: MenoSize.lg,
-            required: false,
             keyboardType: TextInputType.emailAddress,
           ),
           const MenoSpacer.v(20),
