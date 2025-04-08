@@ -7,6 +7,8 @@ import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
 import 'package:meno_flutter/src/features/profile/application/edit_profile_form.dart';
 import 'package:meno_flutter/src/features/profile/presentation/presentation.dart';
+import 'package:meno_flutter/src/features/settings/settings.dart'
+    show SettingsPage;
 import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -121,6 +123,14 @@ class PasswordRecoveryRoute extends GoRouteData {
 
   @override
   Widget build(context, state) => const PasswordRecoveryPage();
+}
+
+@TypedGoRoute<SettingsRoute>(path: '/settings')
+class SettingsRoute extends GoRouteData {
+  const SettingsRoute();
+
+  @override
+  Widget build(context, state) => const SettingsPage();
 }
 
 @TypedStatefulShellRoute<MenoLayoutRouteData>(

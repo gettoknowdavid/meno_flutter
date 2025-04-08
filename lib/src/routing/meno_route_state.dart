@@ -55,6 +55,7 @@ extension MenoRouteX on MenoRouteState {
         const MyProfileRoute().location,
         const SwitchAccountModalRoute().location,
         const EditProfileRoute().location,
+        const SettingsRoute().location,
       },
       _ => {const LoadingRoute().location},
     };

@@ -88,7 +88,7 @@ class _TitleWidget extends ConsumerWidget {
               child: IconButton(
                 color: colors.buttonFill,
                 icon: const Icon(MIcons.settings, size: 24),
-                onPressed: () {},
+                onPressed: () => const SettingsRoute().push(context),
               ),
             ),
           ],
