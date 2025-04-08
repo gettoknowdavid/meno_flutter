@@ -43,11 +43,7 @@ class SwitchAccountModalRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return ModalPage<void>(
-      builder: (context) => const SwicthAccountModal(),
-      useRootNavigator: true,
-      isScrollControlled: true,
-    );
+    return ModalPage<void>(builder: (context) => const SwicthAccountModal());
   }
 }
 
@@ -57,11 +53,7 @@ class EditProfileRoute extends GoRouteData {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return ModalPage<void>(
-      builder: (context) => const EditProfileModal(),
-      useRootNavigator: true,
-      isScrollControlled: true,
-    );
+    return ModalPage<void>(builder: (context) => const EditProfileModal());
   }
 
   @override

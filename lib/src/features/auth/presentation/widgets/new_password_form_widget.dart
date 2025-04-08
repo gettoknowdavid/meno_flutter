@@ -18,7 +18,6 @@ class NewPasswordFormWidget extends StatelessWidget {
           isPassword: true,
           prefixIcon: MIcons.key,
           size: MenoSize.lg,
-          required: false,
         ),
         const MenoSpacer.v(Insets.sm),
         const PasswordRulesWidgetTracker(),
@@ -30,7 +29,6 @@ class NewPasswordFormWidget extends StatelessWidget {
           isPassword: true,
           prefixIcon: MIcons.key,
           size: MenoSize.lg,
-          required: false,
         ),
         const MenoSpacer.v(8),
         MenoText.caption(
