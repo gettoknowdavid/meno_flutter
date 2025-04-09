@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
@@ -8,31 +9,56 @@ abstract class IValueObject {
 }
 
 @immutable
-abstract class ValueObject<T> implements IValueObject {
-  const ValueObject();
+abstract class ValueObject<T> with EquatableMixin implements IValueObject {
+  /// Base constructor takes the pre-validated Either result.
+  /// Can be const, allowing subclasses to define const constructors.
+  const ValueObject(this.value);
 
-  Either<ValueException<dynamic>, Unit> get failureOrUnit {
-    return value.fold(left, (r) => right(unit));
-  }
+  /// The core state: the result of validation, stored immutably.
+  final Either<ValueException<T>, T> value;
 
-  @override
-  int get hashCode => value.fold((f) => f.hashCode, (r) => r.hashCode);
-
+  /// Returns `true` if the validation was successful (result is Right).
   @override
   bool get isValid => value.isRight();
 
-  Either<ValueException<T>, T> get value;
+  /// Returns the validated value if successful (isRight), otherwise throws
+  /// the [ValueException].
+  T getOrCrash() =>
+      value.fold((failure) => throw failure, (validValue) => validValue);
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ValueObject<T> && other.value == value;
+  /// Returns the validated value if successful (isRight), otherwise
+  /// returns the result of [dflt].
+  T getOrElse(T Function() dflt) => value.getOrElse(dflt);
+
+  /// Returns the validated value if successful (isRight), otherwise
+  /// returns null.
+  T? getOrNull() => value.fold((_) => null, (validValue) => validValue);
+
+  /// Returns the failure object [ValueException] if validation failed
+  /// (isLeft), otherwise null.
+  ValueException<T>? get failureOrNull {
+    return value.fold((failure) => failure, (_) => null);
   }
 
-  T? getOrNull() => value.fold((f) => null, id);
+  /// Allows pattern matching or handling both success (Right) and
+  /// failure (Left) cases directly.
+  B fold<B>(
+    B Function(ValueException<T> failure) ifLeft,
+    B Function(T value) ifRight,
+  ) => value.fold(ifLeft, ifRight);
 
-  T getOrElse(T dflt) => value.getOrElse(() => dflt);
+  /// Provides access to the original input *if* it was valid.
+  /// Returns null otherwise.
+  /// Note: Original input isn't stored directly in the base
+  /// class state anymore, but can be retrieved from the Right side
+  /// of the Either.
+  T? get validInputOrNull {
+    return value.fold((_) => null, (validValue) => validValue);
+  }
 
   @override
-  String toString() => 'Value($value)';
+  List<Object?> get props => [value];
+
+  @override
+  bool? get stringify => true;
 }

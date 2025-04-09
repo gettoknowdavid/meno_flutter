@@ -17,10 +17,10 @@ final class User with EquatableMixin {
     this.emailAccountType,
   });
 
-  final Id id;
-  final FullName fullName;
+  final ID id;
+  final SingleLineString fullName;
   final Email email;
-  final Bio? bio;
+  final MultiLineString? bio;
   final GeneralSettings? generalSettings;
   final AuthRole? role;
   final String? imageId;
@@ -29,10 +29,10 @@ final class User with EquatableMixin {
   final String? emailAccountType;
 
   User copyWith({
-    Id? id,
-    FullName? fullName,
+    ID? id,
+    SingleLineString? fullName,
     Email? email,
-    Bio? bio,
+    MultiLineString? bio,
     GeneralSettings? generalSettings,
     AuthRole? role,
     String? imageId,

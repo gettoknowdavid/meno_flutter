@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:formz/formz.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/profile/profile.dart';
@@ -62,7 +61,7 @@ class _FullNameField extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(editProfileFormProvider.select((s) => s.status));
     final name = ref.watch(editProfileFormProvider.select((s) => s.name));
-    final controller = useTextEditingController(text: name.value);
+    final controller = useTextEditingController(text: name?.getOrNull());
     final focusNode = useFocusNode();
 
     return MenoTextfield(
@@ -73,7 +72,7 @@ class _FullNameField extends HookConsumerWidget {
       enabled: status != MenoFormStatus.inProgress,
       focusNode: focusNode,
       onChanged: ref.read(editProfileFormProvider.notifier).onNameChanged,
-      validator: (value) => name.validator(value ?? '')?.text,
+      validator: (value) => name?.failureOrNull?.message,
     );
   }
 }
@@ -85,7 +84,7 @@ class _DescriptionField extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(editProfileFormProvider.select((s) => s.status));
     final bio = ref.watch(editProfileFormProvider.select((s) => s.bio));
-    final controller = useTextEditingController(text: bio.value);
+    final controller = useTextEditingController(text: bio?.getOrNull());
     final focusNode = useFocusNode();
 
     return MenoTextbox(
@@ -96,7 +95,7 @@ class _DescriptionField extends HookConsumerWidget {
       enabled: status != MenoFormStatus.inProgress,
       focusNode: focusNode,
       onChanged: ref.read(editProfileFormProvider.notifier).onBioChanged,
-      validator: (value) => bio.validator(value ?? '')?.text,
+      validator: (value) => bio?.failureOrNull?.message,
     );
   }
 }
@@ -123,7 +122,7 @@ class _ImageField extends HookConsumerWidget {
           MenoAvatar(
             url: url,
             radius: 48,
-            file: file.value,
+            file: file?.value.getOrElse(() => null),
             onTap: status == MenoFormStatus.inProgress ? null : onTap,
           ),
           Align(
@@ -159,7 +158,7 @@ class _SubmitButton extends ConsumerWidget {
     return MenoPrimaryButton(
       size: MenoSize.lg,
       onPressed: () async {
-        if (Formz.validate(ref.read(editProfileFormProvider).inputs)) {
+        if (ref.read(editProfileFormProvider).hasChanges) {
           await ref.read(editProfileFormProvider.notifier).submit();
         }
       },

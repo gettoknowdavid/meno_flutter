@@ -23,10 +23,9 @@ abstract class IAuthFacade {
   /// Returns an `Either` value, where the left value is a `AuthException`
   /// object and the right value is a `Unit` object.
   Future<Either<AuthException, Unit>> register({
-    required FullName fullName,
+    required SingleLineString fullName,
     required Email email,
     required Password password,
-    Bio? bio,
   });
 
   Future<void> logout();

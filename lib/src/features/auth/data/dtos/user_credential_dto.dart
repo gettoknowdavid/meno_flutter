@@ -35,6 +35,9 @@ extension UserCrendentialDtoX on UserCredentialDto {
 
 extension UserCredentialToDtoX on UserCredential {
   UserCredentialDto get toDto {
-    return UserCredentialDto(user: user.toDto, token: token.getOrElse(''));
+    return UserCredentialDto(
+      user: user.toDto,
+      token: token.getOrElse(() => ''),
+    );
   }
 }

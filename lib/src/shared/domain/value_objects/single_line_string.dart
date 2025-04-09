@@ -1,26 +1,24 @@
-import 'package:formz/formz.dart';
-import 'package:intl/intl.dart';
+import 'package:dartz/dartz.dart' show Either, Left, Right;
 
-enum SingleLineError { maxLineExceeded }
+import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
+import 'package:meno_flutter/src/shared/shared.dart';
 
-class SingleLineString extends FormzInput<String, SingleLineError> {
-  const SingleLineString.pure([super.value = '']) : super.pure();
-
-  const SingleLineString.dirty([super.value = '']) : super.dirty();
-
-  @override
-  SingleLineError? validator(String value) {
-    final formattedInput = toBeginningOfSentenceCase(value);
-    if (formattedInput.contains('\n')) return SingleLineError.maxLineExceeded;
-    return null;
+class SingleLineString extends ValueObject<String> {
+  factory SingleLineString(String input) {
+    final sanitizedInput = toBeginningOfSentenceCase(input.trim());
+    final validationResult = _validateString(sanitizedInput);
+    return SingleLineString._(validationResult);
   }
-}
 
-extension SingleLineErrorX on SingleLineError {
-  String get text {
-    switch (this) {
-      case SingleLineError.maxLineExceeded:
-        return 'Number of valid lines has been exceeded.';
+  const SingleLineString._(super.value);
+
+  static const SingleLineString empty = SingleLineString._(Right(''));
+
+  static Either<ValueException<String>, String> _validateString(String input) {
+    if (input.contains('\n')) {
+      return Left(MaxLinesExceededValueException(input, 1));
     }
+
+    return Right(input);
   }
 }

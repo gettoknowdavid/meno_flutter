@@ -11,7 +11,7 @@ class ProfileBioWidget extends StatelessWidget {
     this.isCollapsed,
   });
 
-  final Bio? bio;
+  final MultiLineString? bio;
   final bool isLoading;
   final ValueNotifier<bool>? isCollapsed;
 
@@ -26,7 +26,7 @@ class ProfileBioWidget extends StatelessWidget {
         height: (isCollapsed?.value ?? false) ? 54 : 100,
         constraints: const BoxConstraints(maxHeight: 100, minHeight: 54),
         child: ReadMoreText(
-          bio?.value ?? 'No bio',
+          bio?.validInputOrNull ?? 'No bio',
           style: textTheme.captionRegular,
           isCollapsed: isCollapsed,
           trimLines: 3,

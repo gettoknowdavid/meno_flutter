@@ -71,9 +71,9 @@ final class ProfileDto with EquatableMixin {
 extension ProfileToDto on Profile {
   ProfileDto get toDto {
     return ProfileDto(
-      id: id.getOrElse(''),
-      fullName: fullName.value,
-      bio: bio?.value,
+      id: id.getOrElse(() => ''),
+      fullName: fullName.getOrElse(() => ''),
+      bio: bio?.getOrElse(() => ''),
       stats: stats?.toDto,
       imageUrl: imageUrl,
       isSubscribedToUser: isSubscribedToUser,
@@ -89,9 +89,9 @@ extension ProfileToDto on Profile {
 extension ProfileToDomain on ProfileDto {
   Profile get toDomain {
     return Profile(
-      id: Id.fromString(id),
-      fullName: FullName.pure(fullName),
-      bio: Bio.pure(bio),
+      id: ID.fromString(id),
+      fullName: SingleLineString(fullName),
+      bio: bio == null ? null : MultiLineString(bio!),
       stats: stats?.toDomain,
       imageUrl: imageUrl,
       isSubscribedToUser: isSubscribedToUser,

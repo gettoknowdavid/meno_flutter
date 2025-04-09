@@ -76,7 +76,7 @@ class LoginEmailField extends HookConsumerWidget {
       keyboardType: TextInputType.emailAddress,
       focusNode: focusNode,
       onChanged: ref.read(loginFormProvider.notifier).onEmailChanged,
-      validator: (value) => email.validator(value ?? '')?.text,
+      validator: (_) => email.failureOrNull?.message,
     );
   }
 }
@@ -99,7 +99,7 @@ class LoginPasswordField extends HookConsumerWidget {
       enabled: status != MenoFormStatus.inProgress,
       focusNode: focusNode,
       onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
-      validator: (value) => password.validator(value ?? '')?.text,
+      validator: (_) => password.failureOrNull?.message,
     );
   }
 }
@@ -114,7 +114,7 @@ class LoginButton extends ConsumerWidget {
     return MenoPrimaryButton(
       size: MenoSize.lg,
       isLoading: status == MenoFormStatus.inProgress,
-      disabled: ref.watch(loginFormProvider.select((s) => s.isNotValid)),
+      disabled: !ref.watch(loginFormProvider.select((s) => s.isFormValid)),
       onPressed: () {
         if (Form.of(context).validate()) {
           ref.read(loginFormProvider.notifier).submit();

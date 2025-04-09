@@ -20,8 +20,8 @@ class AuthFacade implements IAuthFacade {
     required Password password,
   }) async {
     final response = await _remote.login(
-      email: email.value,
-      password: password.value,
+      email: email.getOrCrash(),
+      password: password.getOrCrash(),
     );
 
     return response.fold(Left.new, (response) async {
@@ -32,15 +32,14 @@ class AuthFacade implements IAuthFacade {
 
   @override
   Future<Either<AuthException, Unit>> register({
-    required FullName fullName,
+    required SingleLineString fullName,
     required Email email,
     required Password password,
-    Bio? bio,
   }) async {
     final response = await _remote.register(
-      fullName: fullName.value,
-      email: email.value,
-      password: password.value,
+      fullName: fullName.getOrCrash(),
+      email: email.getOrCrash(),
+      password: password.getOrCrash(),
     );
 
     return response.fold(Left.new, (response) async {

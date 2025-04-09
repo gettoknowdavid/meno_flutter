@@ -1,7 +1,7 @@
 //
 // ignore_for_file: avoid_redundant_argument_values
 
-import 'package:formz/formz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,7 +15,7 @@ class LoginForm extends _$LoginForm {
 
   void onEmailChanged(String value) {
     state = state.copyWith(
-      email: Email.dirty(value),
+      email: Email(value),
       exception: null,
       status: MenoFormStatus.initial,
     );
@@ -23,14 +23,14 @@ class LoginForm extends _$LoginForm {
 
   void onPasswordChanged(String value) {
     state = state.copyWith(
-      password: Password.dirty(value),
+      password: Password(value),
       exception: null,
       status: MenoFormStatus.initial,
     );
   }
 
   Future<void> submit() async {
-    if (Formz.validate(state.inputs)) {
+    if (state.isFormValid) {
       state = state.copyWith(status: MenoFormStatus.inProgress);
 
       final result = await ref
@@ -48,10 +48,10 @@ class LoginForm extends _$LoginForm {
   }
 }
 
-class LoginFormState with FormzMixin {
+class LoginFormState with EquatableMixin {
   const LoginFormState({
-    this.email = const Email.pure(),
-    this.password = const Password.pure(),
+    this.email = Email.empty,
+    this.password = Password.emptySignIn,
     this.status = MenoFormStatus.initial,
     this.exception,
   });
@@ -75,6 +75,11 @@ class LoginFormState with FormzMixin {
     );
   }
 
+  bool get isFormValid => email.isValid && password.isValid;
+
   @override
-  List<FormzInput<dynamic, dynamic>> get inputs => [email, password];
+  List<Object?> get props => [email, password, status, exception];
+
+  @override
+  bool? get stringify => true;
 }

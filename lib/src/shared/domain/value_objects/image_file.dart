@@ -1,31 +1,29 @@
 import 'dart:io';
 
-import 'package:formz/formz.dart';
+import 'package:dartz/dartz.dart' show Either, Left, Right;
+import 'package:meno_flutter/src/shared/shared.dart';
 
-enum ImageFileValidationError { invalidFormat }
-
-class ImageFile extends FormzInput<File?, ImageFileValidationError> {
-  const ImageFile.pure([super.value]) : super.pure();
-
-  const ImageFile.dirty([super.value]) : super.dirty();
-
-  @override
-  ImageFileValidationError? validator(File? value) {
-    if (value == null) return null;
-    final allowedExtensions = ['jpg', 'jpeg', 'png'];
-    final extension = value.path.split('.').last.toLowerCase();
-    if (!allowedExtensions.contains(extension)) {
-      return ImageFileValidationError.invalidFormat;
-    }
-    return null;
+class ImageFile extends ValueObject<File?> {
+  factory ImageFile(File? input) {
+    final validationResult = _validateFile(input);
+    return ImageFile._(validationResult);
   }
-}
 
-extension ImageFileValidationErrorX on ImageFileValidationError {
-  String get text {
-    switch (this) {
-      case ImageFileValidationError.invalidFormat:
-        return 'Invalid image format. Select only JPG, JPEG, PNG';
+  const ImageFile._(super.input);
+
+  static const ImageFile empty = ImageFile._(Right(null));
+
+  static final _allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+  static Either<ValueException<File?>, File?> _validateFile(File? input) {
+    if (input == null) return const Right(null);
+
+    final extension = input.path.split('.').last.toLowerCase();
+
+    if (!_allowedExtensions.contains(extension)) {
+      return Left(InvalidFileFormatException<File?>(input));
     }
+
+    return const Right(null);
   }
 }

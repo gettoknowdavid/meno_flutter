@@ -7,22 +7,22 @@ abstract class IProfileFacade {
   /// Updates the [Profile] of the currently authenticated with the
   /// given fields:
   ///
-  /// [FullName] : Full name of the user
+  /// [SingleLineString] : Full name of the user
   ///
-  /// [Bio] : Biography of the user
+  /// [MultiLineString] : Biography of the user
   ///
   /// [ImageFile] : Image of the user
   ///
   Future<Either<ProfileException, Profile>> editProfile({
-    required Id id,
-    FullName? fullName,
-    Bio? bio,
+    required ID id,
+    SingleLineString? fullName,
+    MultiLineString? bio,
     ImageFile? image,
   });
 
   /// Gets the [Profile] that matches the give [id]
   ///
-  Future<Either<ProfileException, Profile>> getProfile(Id id);
+  Future<Either<ProfileException, Profile>> getProfile(ID id);
 
   Future<Either<ProfileException, PaginatedList<Profile?>>> getProfiles({
     /// Searches for users with a name that partially or fully match the
@@ -70,7 +70,7 @@ abstract class IProfileFacade {
   Future<Either<ProfileException, PaginatedList<Profile?>>> getSubscribers({
     /// The [Profile] or [User] id of the person you are subscribed to
     ///
-    required Id subscriptionId,
+    required ID subscriptionId,
 
     /// Adds an extra field to each response indicating if the logged in
     /// user is subscribed to the user Example: `subscribed`
@@ -103,7 +103,7 @@ abstract class IProfileFacade {
   Future<Either<ProfileException, PaginatedList<Profile?>>> getSubscriptionss({
     /// The [Profile] or [User] id of the subscriber
     ///
-    required Id subscriberId,
+    required ID subscriberId,
 
     /// Adds an extra field to each response indicating if the logged in
     /// user is subscribed to the user Example: `subscribed`
@@ -131,11 +131,11 @@ abstract class IProfileFacade {
     int size = kPageSize,
   });
 
-  /// Subscribes to the [Profile] with the given [Id]: [id]
+  /// Subscribes to the [Profile] with the given [ID]: [id]
   ///
-  Future<Either<ProfileException, Unit>> subscribe(Id id);
+  Future<Either<ProfileException, Unit>> subscribe(ID id);
 
-  /// Unsubscribes from the [Profile] with the given [Id]: [id]
+  /// Unsubscribes from the [Profile] with the given [ID]: [id]
   ///
-  Future<Either<ProfileException, Unit>> unsubscribe(Id id);
+  Future<Either<ProfileException, Unit>> unsubscribe(ID id);
 }

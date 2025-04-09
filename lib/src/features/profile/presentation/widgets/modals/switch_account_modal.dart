@@ -35,7 +35,7 @@ class SwicthAccountModal extends HookConsumerWidget {
 
                 return MenoRadioListTile<UserCredential>(
                   key: ValueKey(entry.key),
-                  headline: user.fullName.value,
+                  headline: user.fullName.getOrElse(() => ''),
                   value: entry.value,
                   groupValue: credential,
                   selected: selected,
