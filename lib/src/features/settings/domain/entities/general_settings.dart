@@ -15,8 +15,8 @@ final class GeneralSettings with EquatableMixin {
     this.pushNotificationToken,
   });
 
-  final Id id;
-  final Id userId;
+  final ID id;
+  final ID userId;
   final List<NotificationSetting> notificationSettings;
   final bool pushNotifications;
   final bool appNotifications;
@@ -26,8 +26,8 @@ final class GeneralSettings with EquatableMixin {
   final String? pushNotificationToken;
 
   GeneralSettings copyWith({
-    Id? id,
-    Id? userId,
+    ID? id,
+    ID? userId,
     List<NotificationSetting>? notificationSettings,
     bool? pushNotifications,
     bool? appNotifications,

@@ -1,15 +1,43 @@
-import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart' show Either, Left, Right;
 import 'package:meno_flutter/src/shared/domain/domain.dart';
 import 'package:uuid/uuid.dart';
 
-class Id extends ValueObject<String> {
-  factory Id() => Id._(right(const Uuid().v4()));
+class ID extends ValueObject<String> {
+  /// Factory to generate a new, unique ID (UUID v4).
+  /// Assumes newly generated UUIDs are inherently valid in this context.
+  factory ID() {
+    // Use non-const Uuid().v4() to ensure uniqueness at runtime
+    final uuidString = const Uuid().v4();
+    // Directly create a Right, bypassing string validation for generated IDs
+    return ID._(Right(uuidString));
+  }
 
-  const Id._(this.value);
+  /// Factory to create an Id from a string representation.
+  /// Validates the input string using internal logic.
+  factory ID.fromString(String input) {
+    // Perform validation using the static helper method
+    final validationResult = _validateString(input);
+    // Create instance using the private constructor, passing the validation 
+    // result
+    return ID._(validationResult);
+  }
 
-  /// Used with strings we trust are unique, such as database IDs.
-  factory Id.fromString(String str) => Id._(validateRequiredValue(str));
+  const ID._(super.value);
 
-  @override
-  final Either<ValueException<String>, String> value;
+  static const ID empty = ID._(Right(''));
+
+  /// Static validation logic for IDs created from strings.
+  static Either<ValueException<String>, String> _validateString(String input) {
+    final sanitizedInput = input.trim();
+
+    if (sanitizedInput.isEmpty) {
+      return const Left(RequiredValueException(message: 'ID cannot be empty.'));
+    }
+
+    if (!Uuid.isValidUUID(fromString: sanitizedInput)) {
+      return Left(InvalidValueException(sanitizedInput, message: 'Invalid ID'));
+    }
+
+    return Right(sanitizedInput);
+  }
 }

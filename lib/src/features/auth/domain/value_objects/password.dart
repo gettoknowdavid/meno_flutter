@@ -1,6 +1,10 @@
-import 'package:formz/formz.dart';
+import 'package:dartz/dartz.dart' show Either, Left, Right;
+import 'package:meno_flutter/src/shared/shared.dart';
 
-/// Enum representing password validation errors
+/// Enum to distinguish between sign-in and sign-up modes
+enum PasswordMode { signIn, signUp }
+
+/// Enum representing password validation errors (for UI tracker)
 enum PasswordValidationError {
   tooShort,
   missingUppercase,
@@ -9,115 +13,95 @@ enum PasswordValidationError {
   missingSpecialCharacter,
 }
 
-/// Enum to distinguish between sign-in and sign-up modes
-enum PasswordMode { login, register }
+class Password extends ValueObject<String> {
+  /// Factory constructor: Validates eagerly and creates the instance.
+  factory Password(String input, [PasswordMode mode = PasswordMode.signIn]) {
+    final sanitizedInput = input.trim();
 
-/// Represents a validated password input using Formz
-class Password extends FormzInput<String, PasswordValidationError> {
-  const Password.pure([super.value = '', this.mode = PasswordMode.login])
-    : super.pure();
-
-  const Password.dirty([super.value = '', this.mode = PasswordMode.login])
-    : super.dirty();
-
-  final PasswordMode mode;
-
-  @override
-  PasswordValidationError? validator(String value) {
-    if (mode == PasswordMode.login) {
-      if (value.trim().isEmpty) return PasswordValidationError.tooShort;
-      return null;
-    } else {
-      if (value.trim().isEmpty) return PasswordValidationError.tooShort;
-
-      if (value.length < 8) return PasswordValidationError.tooShort;
-
-      if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
-        return PasswordValidationError.missingUppercase;
-      }
-      if (!RegExp(r'(?=.*[a-z])').hasMatch(value)) {
-        return PasswordValidationError.missingLowercase;
-      }
-      if (!RegExp(r'(?=.*[0-9])').hasMatch(value)) {
-        return PasswordValidationError.missingNumber;
-      }
-      if (!RegExp(r'(?=.*[@$!%*?&])').hasMatch(value)) {
-        return PasswordValidationError.missingSpecialCharacter;
-      }
-
-      return null;
-    }
+    // Perform validation using the static method
+    final validationResult = _validatePassword(sanitizedInput, mode: mode);
+    // Create instance via private constructor, passing result, original input,
+    // and mode
+    return Password._(validationResult, mode);
   }
 
-  Set<PasswordValidationError> get errors => _errors();
+  const Password._(super.value, this.mode);
 
-  Set<PasswordValidationError> _errors() {
-    final e = <PasswordValidationError>{};
-    if (mode == PasswordMode.login) {
-      if (value.trim().isEmpty) e.add(PasswordValidationError.tooShort);
-      return e;
+  /// The mode (signIn or signUp) affects validation rules.
+  final PasswordMode mode;
+
+  /// Default class for use with Sign In form
+  static const emptySignIn = Password._(Right(''), PasswordMode.signIn);
+
+  /// Default class for use with Sign Up form
+  static const emptySignUp = Password._(Right(''), PasswordMode.signUp);
+
+  static Either<ValueException<String>, String> _validatePassword(
+    String input, {
+    required PasswordMode mode,
+  }) {
+    if (mode == PasswordMode.signIn) {
+      if (input.isEmpty) return const Left(PasswordTooShort());
+
+      return Right(input);
     } else {
-      if (value.length < 8) e.add(PasswordValidationError.tooShort);
-      if (!RegExp(r'[A-Z]').hasMatch(value)) {
-        e.add(PasswordValidationError.missingUppercase);
+      if (input.isEmpty) return const Left(PasswordTooShort());
+
+      if (input.length < 8) return const Left(PasswordTooShort());
+
+      if (!RegExp(r'(?=.*[A-Z])').hasMatch(input)) {
+        return const Left(PasswordMissingUppercase());
       }
-      if (!RegExp(r'[a-z]').hasMatch(value)) {
-        e.add(PasswordValidationError.missingLowercase);
+
+      if (!RegExp(r'(?=.*[a-z])').hasMatch(input)) {
+        return const Left(PasswordMissingLowercase());
       }
-      if (!RegExp(r'[0-9]').hasMatch(value)) {
-        e.add(PasswordValidationError.missingNumber);
+
+      if (!RegExp(r'(?=.*[0-9])').hasMatch(input)) {
+        return const Left(PasswordMissingNumber());
       }
-      if (!RegExp(r'[@$!%*?&]').hasMatch(value)) {
-        e.add(PasswordValidationError.missingSpecialCharacter);
+
+      if (!RegExp(r'(?=.*[@$!%*?&])').hasMatch(input)) {
+        return const Left(PasswordMissingSpecialCharacter());
       }
-      return e;
+
+      return Right(input);
     }
   }
 }
 
-extension PasswordValidationErrorX on PasswordValidationError {
-  String get text {
+extension PasswordValidationErrorX on ValueException<String> {
+  String? get title {
     switch (this) {
-      case PasswordValidationError.missingLowercase:
-        return 'Please include a lowercase letter in your password';
-      case PasswordValidationError.missingNumber:
-        return 'Please include a number in your password';
-      case PasswordValidationError.missingSpecialCharacter:
-        return 'Please include a special character in your password';
-      case PasswordValidationError.missingUppercase:
-        return 'Please include a uppercase letter in your password';
-      case PasswordValidationError.tooShort:
-        return 'Password must be atleast 8 characters';
-    }
-  }
-
-  String get title {
-    switch (this) {
-      case PasswordValidationError.missingLowercase:
+      case PasswordMissingLowercase():
         return 'a';
-      case PasswordValidationError.missingNumber:
+      case PasswordMissingNumber():
         return '123';
-      case PasswordValidationError.missingSpecialCharacter:
+      case PasswordMissingSpecialCharacter():
         return '%';
-      case PasswordValidationError.missingUppercase:
+      case PasswordMissingUppercase():
         return 'A';
-      case PasswordValidationError.tooShort:
+      case PasswordTooShort():
         return '8+';
+      default:
+        return null;
     }
   }
 
-  String get subtitle {
+  String? get subtitle {
     switch (this) {
-      case PasswordValidationError.missingLowercase:
+      case PasswordMissingLowercase():
         return 'Lowercase';
-      case PasswordValidationError.missingNumber:
+      case PasswordMissingNumber():
         return 'Number';
-      case PasswordValidationError.missingSpecialCharacter:
+      case PasswordMissingSpecialCharacter():
         return 'Symbol';
-      case PasswordValidationError.missingUppercase:
+      case PasswordMissingUppercase():
         return 'Uppercase';
-      case PasswordValidationError.tooShort:
+      case PasswordTooShort():
         return 'Characters';
+      default:
+        return null;
     }
   }
 }

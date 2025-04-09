@@ -1,7 +1,9 @@
+//
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:formz/formz.dart';
 import 'package:meno_flutter/src/features/profile/profile.dart';
 import 'package:meno_flutter/src/services/services.dart';
 import 'package:meno_flutter/src/shared/domain/domain.dart';
@@ -23,17 +25,25 @@ class EditProfileForm extends _$EditProfileForm {
 
     return EditProfileFormState(
       profile: profile,
-      name: FullName.dirty(profile.fullName.value),
-      bio: Bio.dirty(profile.bio?.value),
+      name: profile.fullName,
+      bio: profile.bio,
     );
   }
 
   void onNameChanged(String value) {
-    state = state.copyWith(name: FullName.dirty(value));
+    state = state.copyWith(
+      name: SingleLineString(value),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   void onBioChanged(String value) {
-    state = state.copyWith(bio: Bio.dirty(value));
+    state = state.copyWith(
+      bio: MultiLineString(value),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   Future<void> imageChanged({bool fromGallery = true}) async {
@@ -42,7 +52,11 @@ class EditProfileForm extends _$EditProfileForm {
         .getImage(fromGallery: fromGallery);
 
     if (file != null) {
-      state = state.copyWith(image: ImageFile.dirty(File(file.path)));
+      state = state.copyWith(
+        image: ImageFile(File(file.path)),
+        exception: null,
+        status: MenoFormStatus.initial,
+      );
     }
   }
 
@@ -54,9 +68,9 @@ class EditProfileForm extends _$EditProfileForm {
           .read(profileFacadeProvider)
           .editProfile(
             id: state.profile!.id,
-            fullName: state.name.isPure ? null : state.name,
-            bio: state.bio.isPure ? null : state.bio,
-            image: state.image.isPure ? null : state.image,
+            fullName: state.name == state.profile?.fullName ? null : state.name,
+            bio: state.bio == state.profile?.bio ? null : state.bio,
+            image: state.image ?? state.image,
           );
 
       state = result.fold(
@@ -73,26 +87,26 @@ class EditProfileForm extends _$EditProfileForm {
   }
 }
 
-class EditProfileFormState with FormzMixin, EquatableMixin {
+class EditProfileFormState with EquatableMixin {
   const EditProfileFormState({
-    this.profile,
-    this.name = const FullName.pure(),
-    this.bio = const Bio.pure(),
-    this.image = const ImageFile.pure(),
+    this.name,
+    this.bio,
+    this.image,
     this.status = MenoFormStatus.initial,
+    this.profile,
     this.exception,
   });
 
   final Profile? profile;
-  final FullName name;
-  final Bio bio;
-  final ImageFile image;
+  final SingleLineString? name;
+  final MultiLineString? bio;
+  final ImageFile? image;
   final MenoFormStatus status;
   final ProfileException? exception;
 
   EditProfileFormState copyWith({
-    FullName? name,
-    Bio? bio,
+    SingleLineString? name,
+    MultiLineString? bio,
     ImageFile? image,
     MenoFormStatus? status,
     ProfileException? exception,
@@ -108,17 +122,14 @@ class EditProfileFormState with FormzMixin, EquatableMixin {
   }
 
   bool get hasChanges {
-    final nameHasChanges = profile?.fullName.value != name.value;
-    final bioHasChanges = profile?.bio?.value != bio.value;
-    final imageHasChanges = !image.isPure;
+    final nameHasChanges = profile?.fullName != name;
+    final bioHasChanges = profile?.bio != bio;
+    final imageHasChanges = image != null;
     return nameHasChanges || bioHasChanges || imageHasChanges;
   }
 
   @override
-  List<FormzInput<dynamic, dynamic>> get inputs => [name, bio, image];
-
-  @override
-  List<Object?> get props => [name, bio, image, status, exception];
+  List<Object?> get props => [profile, name, bio, image, status, exception];
 
   @override
   bool? get stringify => true;

@@ -54,8 +54,8 @@ final class GeneralSettingsDto with EquatableMixin {
 extension GeneralSettingsX on GeneralSettingsDto {
   GeneralSettings get toDomain {
     return GeneralSettings(
-      id: Id.fromString(id),
-      userId: Id.fromString(userId),
+      id: ID.fromString(id),
+      userId: ID.fromString(userId),
       notificationSettings:
           notificationSettings.map((n) => n.toDomain).toList(),
       pushNotifications: pushNotifications,
@@ -71,8 +71,8 @@ extension GeneralSettingsX on GeneralSettingsDto {
 extension GeneralSettingsDtoX on GeneralSettings {
   GeneralSettingsDto get toDto {
     return GeneralSettingsDto(
-      id: id.getOrElse(''),
-      userId: userId.getOrElse(''),
+      id: id.getOrElse(() => ''),
+      userId: userId.getOrElse(() => ''),
       notificationSettings: notificationSettings.map((n) => n.toDto).toList(),
       pushNotifications: pushNotifications,
       appNotifications: appNotifications,

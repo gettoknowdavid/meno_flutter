@@ -8,7 +8,7 @@ final class AuthStorageKeys {
   /// Returns all the accounts stored in [SecureStorageService]
   static const String allAccounts = '_accounts_';
 
-  /// Returns the [Id] of the currently authenticated [User]
+  /// Returns the [ID] of the currently authenticated [User]
   static const String currentUserId = '_auth_user_id_';
 
   /// Returns the [Token] of the currently authenticated [User]

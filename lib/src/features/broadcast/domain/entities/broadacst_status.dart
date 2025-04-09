@@ -1,0 +1,1 @@
+enum BroadacstStatus { active, inactive }

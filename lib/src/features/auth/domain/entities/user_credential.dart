@@ -9,10 +9,10 @@ final class UserCredential with EquatableMixin {
     return UserCredential(
       token: Token(''),
       user: User(
-        id: Id.fromString(''),
-        fullName: const FullName.pure('New Birth Group'),
-        email: const Email.pure('newbirthgroup@gmail.com'),
-        bio: const Bio.pure(
+        id: ID.empty,
+        fullName: SingleLineString('New Birth Group'),
+        email: Email('newbirthgroup@gmail.com'),
+        bio: MultiLineString(
           '''This is a group that is committed to the growth of those that have been re-birthed in Christ. The vision of this group is to bring to light the possibilities of the New Creation in Christ via the teaching of the word, prayer-- equipping each member for the work of ministry, that each may walk worthy of the Lord in all things.''',
         ),
       ),

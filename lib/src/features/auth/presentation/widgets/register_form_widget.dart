@@ -34,7 +34,6 @@ class RegisterFormWidget extends HookConsumerWidget {
       }
     });
 
-
     return Form(
       key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -74,7 +73,7 @@ class RegisterFullNameField extends HookConsumerWidget {
       enabled: status != MenoFormStatus.inProgress,
       focusNode: focusNode,
       onChanged: ref.read(registerFormProvider.notifier).onFullNameChanged,
-      validator: (value) => fullName.validator(value ?? '')?.text,
+      validator: (value) => fullName.failureOrNull?.message,
     );
   }
 }
@@ -97,7 +96,7 @@ class RegisterEmailField extends HookConsumerWidget {
       keyboardType: TextInputType.emailAddress,
       focusNode: focusNode,
       onChanged: ref.read(registerFormProvider.notifier).onEmailChanged,
-      validator: (value) => email.validator(value ?? '')?.text,
+      validator: (value) => email.failureOrNull?.message,
     );
   }
 }
@@ -120,7 +119,7 @@ class RegisterPasswordField extends HookConsumerWidget {
           isPassword: true,
           prefixIcon: MIcons.key,
           size: MenoSize.lg,
-          onChanged: ref.read(registerFormProvider.notifier).onPasswordChanged,
+          onChanged: ref.watch(registerFormProvider.notifier).onPasswordChanged,
           enabled: status != MenoFormStatus.inProgress,
           focusNode: focusNode,
         ),
@@ -140,9 +139,9 @@ class TermsOfServiceCheckbox extends HookConsumerWidget {
     final focusNode = useFocusNode();
 
     return MenoCheckbox(
-      value: terms.value ?? false,
+      value: terms.validInputOrNull,
       focusNode: focusNode,
-      validator: (value) => terms.validator(value ?? false)?.text,
+      validator: (value) => terms.failureOrNull?.message,
       onChanged: ref.read(registerFormProvider.notifier).onTermsChanged,
       label: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -167,7 +166,7 @@ class RegisterButton extends ConsumerWidget {
     return MenoPrimaryButton(
       size: MenoSize.lg,
       isLoading: status == MenoFormStatus.inProgress,
-      disabled: ref.watch(registerFormProvider).isNotValid,
+      disabled: !ref.watch(registerFormProvider).isFormValid,
       onPressed: () async {
         if (!Form.of(context).validate()) return;
         return ref.read(registerFormProvider.notifier).submit();

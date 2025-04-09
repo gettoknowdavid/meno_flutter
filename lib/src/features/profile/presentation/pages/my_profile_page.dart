@@ -74,7 +74,7 @@ class _TitleWidget extends ConsumerWidget {
             child: Row(
               children: [
                 MenoText.heading3(
-                  profile.fullName.value,
+                  profile.fullName.getOrElse(() => ''),
                   weight: MenoFontWeight.bold,
                 ),
                 const MenoSpacer.h(Insets.sm),

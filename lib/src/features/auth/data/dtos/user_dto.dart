@@ -67,10 +67,10 @@ extension UserDtoX on UserDto {
 
   User get toDomain {
     return User(
-      id: Id.fromString(id),
-      email: Email.pure(email),
-      fullName: FullName.pure(fullName),
-      bio: bio == null ? null : Bio.pure(bio),
+      id: ID.fromString(id),
+      email: Email(email),
+      fullName: SingleLineString(fullName),
+      bio: bio == null ? null : MultiLineString(bio!),
       generalSettings: generalSettings?.toDomain,
       role: role,
       emailAccountType: emailAccountType,
@@ -84,10 +84,10 @@ extension UserDtoX on UserDto {
 extension UserToDomainX on User {
   UserDto get toDto {
     return UserDto(
-      id: id.getOrElse(''),
-      email: email.value,
-      fullName: fullName.value,
-      bio: bio?.value,
+      id: id.getOrElse(() => ''),
+      email: email.getOrElse(() => ''),
+      fullName: fullName.getOrElse(() => ''),
+      bio: bio?.getOrElse(() => ''),
       generalSettings: generalSettings?.toDto,
       role: role,
       emailAccountType: emailAccountType,

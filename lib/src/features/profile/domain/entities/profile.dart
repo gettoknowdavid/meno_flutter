@@ -30,9 +30,9 @@ final class Profile with EquatableMixin {
     );
   }
 
-  final Id id;
-  final FullName fullName;
-  final Bio? bio;
+  final ID id;
+  final SingleLineString fullName;
+  final MultiLineString? bio;
   final ProfileStats? stats;
   final String? imageUrl;
   final AuthRole? role;
@@ -43,9 +43,9 @@ final class Profile with EquatableMixin {
   final bool? subscribed;
 
   Profile copyWith({
-    Id? id,
-    FullName? fullName,
-    Bio? bio,
+    ID? id,
+    SingleLineString? fullName,
+    MultiLineString? bio,
     ProfileStats? stats,
     String? imageUrl,
     AuthRole? role,
@@ -99,9 +99,9 @@ extension ProfileX on Profile {
 }
 
 final _fakeProfile = Profile(
-  id: Id.fromString('str'),
-  fullName: const FullName.pure('New Birth Group'),
-  bio: const Bio.pure(
+  id: ID.empty,
+  fullName: SingleLineString('New Birth Group'),
+  bio: MultiLineString(
     '''This is a group that is committed to the growth of those that have been re-birthed in Christ. The vision of this group is to bring to light the possibilities of the New Creation in Christ via the teaching of the word, prayer-- equipping each member for the work of ministry, that each may walk worthy of the Lord in all things.''',
   ),
   imageUrl: '',

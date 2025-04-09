@@ -19,17 +19,17 @@ class ProfileFacade implements IProfileFacade {
 
   @override
   Future<Either<ProfileException, Profile>> editProfile({
-    required Id id,
-    FullName? fullName,
-    Bio? bio,
+    required ID id,
+    SingleLineString? fullName,
+    MultiLineString? bio,
     ImageFile? image,
   }) async {
     try {
       final response = await _remote.editProfile(
-        id: id.getOrElse(''),
-        fullName: fullName?.value,
-        bio: bio?.value,
-        image: image?.value,
+        id: id.getOrCrash(),
+        fullName: fullName?.getOrCrash(),
+        bio: bio?.getOrCrash(),
+        image: image?.getOrCrash(),
       );
 
       final user = response.data!.toDomain;
@@ -47,9 +47,9 @@ class ProfileFacade implements IProfileFacade {
   }
 
   @override
-  Future<Either<ProfileException, Profile>> getProfile(Id id) async {
+  Future<Either<ProfileException, Profile>> getProfile(ID id) async {
     try {
-      final response = await _remote.getProfile(id.getOrElse(''));
+      final response = await _remote.getProfile(id.getOrCrash());
       return right(response.data!.toDomain);
     } on DioException catch (error) {
       final exception = _handleDioException(error);
@@ -95,7 +95,7 @@ class ProfileFacade implements IProfileFacade {
 
   @override
   Future<Either<ProfileException, PaginatedList<Profile?>>> getSubscribers({
-    required Id subscriptionId,
+    required ID subscriptionId,
     String include = 'subscribed',
     String? keywords,
     int page = 1,
@@ -103,7 +103,7 @@ class ProfileFacade implements IProfileFacade {
   }) async {
     try {
       final response = await _remote.subcribers(
-        subscriptionId: subscriptionId.getOrElse(''),
+        subscriptionId: subscriptionId.getOrCrash(),
         include: include,
         keywords: keywords,
         page: page,
@@ -127,7 +127,7 @@ class ProfileFacade implements IProfileFacade {
 
   @override
   Future<Either<ProfileException, PaginatedList<Profile?>>> getSubscriptionss({
-    required Id subscriberId,
+    required ID subscriberId,
     String include = 'subscribed',
     String? keywords,
     int page = 1,
@@ -135,7 +135,7 @@ class ProfileFacade implements IProfileFacade {
   }) async {
     try {
       final response = await _remote.subcribers(
-        subscriberId: subscriberId.getOrElse(''),
+        subscriberId: subscriberId.getOrCrash(),
         include: include,
         keywords: keywords,
         page: page,
@@ -158,9 +158,9 @@ class ProfileFacade implements IProfileFacade {
   }
 
   @override
-  Future<Either<ProfileException, Unit>> subscribe(Id id) async {
+  Future<Either<ProfileException, Unit>> subscribe(ID id) async {
     try {
-      await _remote.subscribe(id.getOrElse(''));
+      await _remote.subscribe(id.getOrCrash());
       return right(unit);
     } on DioException catch (error) {
       final exception = _handleDioException(error);
@@ -171,9 +171,9 @@ class ProfileFacade implements IProfileFacade {
   }
 
   @override
-  Future<Either<ProfileException, Unit>> unsubscribe(Id id) async {
+  Future<Either<ProfileException, Unit>> unsubscribe(ID id) async {
     try {
-      await _remote.subscribe(id.getOrElse(''));
+      await _remote.subscribe(id.getOrCrash());
       return right(unit);
     } on DioException catch (error) {
       final exception = _handleDioException(error);
