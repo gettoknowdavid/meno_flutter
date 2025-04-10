@@ -1,2 +1,3 @@
 export 'entities/entities.dart';
-export 'value_objects/value_objects.dart';
+export 'exceptions/exceptions.dart';
+export 'i_broadcast_facade.dart';
