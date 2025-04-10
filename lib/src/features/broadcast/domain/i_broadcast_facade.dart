@@ -7,7 +7,7 @@ abstract class IBroadcastFacade {
   Future<Either<BroadcastException, Broadcast>> createBroadcast({
     required SingleLineString title,
     required MultiLineString description,
-    ImageFile? artwork,
+    ImageFile? image,
     String? timezone,
     List<ID>? cohosts,
   });
@@ -23,39 +23,7 @@ abstract class IBroadcastFacade {
     DateTime? startTime,
   });
 
-  // TODO(gettoknowdavid): Implement fromJson method to parse `broadcastToken`
-  Future<Either<BroadcastException, Broadcast>> joinBroadcast(ID id);
-
-  Future<Either<BroadcastException, Broadcast>> startBroadcast(ID id);
-
-  Future<Either<BroadcastException, List<Participant>>> participants(ID id);
-
-  Future<Either<BroadcastException, List<Participant>>> liveParticipants(ID id);
-
-  Future<Either<BroadcastException, PaginatedList<Broadcast>>>
-  nowLiveBroadcasts({
-    int page = 1,
-    int size = 8,
-    String sortBy = 'title',
-    OrderBy orderBy = OrderBy.ASC,
-  });
-
-  Future<Either<BroadcastException, PaginatedList<Broadcast>>>
-  recentlyLiveBroadcasts({
-    ID? userId,
-    int page = 1,
-    int size = 8,
-    String sortBy = 'title',
-    OrderBy orderBy = OrderBy.ASC,
-
-    /// End time greter than
-    String? endTimeGT,
-
-    /// End time less than
-    String? endTimeLT,
-  });
-
-  Future<Either<BroadcastException, PaginatedList<Broadcast>>> getBroadcasts({
+  Future<Either<BroadcastException, PaginatedList<Broadcast?>>> getBroadcasts({
     /// Status of the broadcast
     /// Example : active or inactive
     String? status,
@@ -75,7 +43,7 @@ abstract class IBroadcastFacade {
     ID? creatorId,
 
     /// Sort by a specific broadcast field
-    String sortBy = 'title',
+    String sortBy = 'startTime',
 
     /// Order by a specific broadcast field
     /// Example : ASC or DESC
@@ -105,4 +73,14 @@ abstract class IBroadcastFacade {
     /// Equal to start time
     bool? startTimeExist,
   });
+
+  Future<Either<BroadcastException, Broadcast>> joinBroadcast(ID id);
+
+  Future<Either<BroadcastException, List<Participant?>>> liveParticipants(
+    ID id,
+  );
+
+  Future<Either<BroadcastException, List<Participant?>>> participants(ID id);
+
+  Future<Either<BroadcastException, Broadcast>> startBroadcast(ID id);
 }

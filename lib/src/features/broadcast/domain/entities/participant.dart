@@ -20,7 +20,7 @@ class Participant with EquatableMixin {
   final SingleLineString fullName;
   final MultiLineString? bio;
   final String? imageUrl;
-  final String? broadcastId;
+  final ID? broadcastId;
   final ParticipantRole? role;
   final int? numberOfListeners;
   final bool? isHostDisconnected;
