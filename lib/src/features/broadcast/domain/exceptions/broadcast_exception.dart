@@ -3,34 +3,40 @@ import 'package:equatable/equatable.dart';
 sealed class BroadcastException with EquatableMixin implements Exception {
   const BroadcastException(this.message);
   final String message;
+
+  @override
+  List<Object?> get props => [message];
+
+  @override
+  bool? get stringify => true;
+}
+
+final class BroadcastTimeoutException extends BroadcastException {
+  const BroadcastTimeoutException([super.message = 'Request timed out']);
+}
+
+final class BroadcastUnknownException extends BroadcastException {
+  const BroadcastUnknownException([super.message = 'Unknown exception']);
 }
 
 final class BroadcastServerException extends BroadcastException {
   const BroadcastServerException([super.message = 'Server exception']);
-
-  @override
-  List<Object?> get props => [message];
-
-  @override
-  bool? get stringify => true;
 }
 
 final class BroadcastNetworkException extends BroadcastException {
   const BroadcastNetworkException([super.message = 'Network exception']);
-
-  @override
-  List<Object?> get props => [message];
-
-  @override
-  bool? get stringify => true;
 }
 
 final class BroadcastExceptionWithMessage extends BroadcastException {
   const BroadcastExceptionWithMessage(super.message);
+}
 
-  @override
-  List<Object?> get props => [message];
+final class BroadcastValidationException extends BroadcastException {
+  BroadcastValidationException(this.errors) : super(_validationErrors(errors));
+  final Map<String, dynamic> errors;
+}
 
-  @override
-  bool? get stringify => true;
+/// Helper function to format validation errors nicely
+String _validationErrors(Map<String, dynamic> errors) {
+  return errors.entries.map((e) => '${e.key}: ${e.value}').join('\n');
 }

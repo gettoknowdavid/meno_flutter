@@ -43,6 +43,48 @@ class Broadcast with EquatableMixin {
   final MultiLineString? creatorBio;
   final String? creatorImageUrl;
 
+  Broadcast copyWith({
+    ID? id,
+    SingleLineString? title,
+    MultiLineString? description,
+    BroadacstStatus? status,
+    String? broadcastToken,
+    ID? creatorId,
+    Participant? creator,
+    SingleLineString? fullName,
+    String? imageUrl,
+    DateTime? startTime,
+    DateTime? endTime,
+    DateTime? createdAt,
+    dynamic deleted,
+    int? liveListeners,
+    int? totalListeners,
+    SingleLineString? creatorFullName,
+    MultiLineString? creatorBio,
+    String? creatorImageUrl,
+  }) {
+    return Broadcast(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      status: status ?? this.status,
+      broadcastToken: broadcastToken ?? this.broadcastToken,
+      creatorId: creatorId ?? this.creatorId,
+      creator: creator ?? this.creator,
+      fullName: fullName ?? this.fullName,
+      imageUrl: imageUrl ?? this.imageUrl,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      createdAt: createdAt ?? this.createdAt,
+      deleted: deleted ?? this.deleted,
+      liveListeners: liveListeners ?? this.liveListeners,
+      totalListeners: totalListeners ?? this.totalListeners,
+      creatorFullName: creatorFullName ?? this.creatorFullName,
+      creatorBio: creatorBio ?? this.creatorBio,
+      creatorImageUrl: creatorImageUrl ?? this.creatorImageUrl,
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,
