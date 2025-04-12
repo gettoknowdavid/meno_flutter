@@ -35,27 +35,61 @@ class ModalPage<T> extends Page<void> {
   }
 }
 
-class DialogPage<T> extends Page<void> {
+class DialogPage<T> extends Page<T> {
   const DialogPage({
-    required this.builder,
+    required this.title,
+    required this.description,
+    this.icon,
+    this.primaryActionText = 'Okay',
+    this.onPrimaryAction,
+    this.secondaryActionText = 'Cancel',
+    this.onSecondaryAction,
+    this.content,
     super.key,
-    this.barrierDismissible = true,
-    this.barrierColor,
+    this.isDismissible = true,
+    this.isDanger = false,
   });
 
-  final WidgetBuilder builder;
-  final bool barrierDismissible;
-  final Color? barrierColor;
+  final bool isDismissible;
+
+  final Widget? icon;
+
+  final String title;
+
+  final String description;
+
+  final String primaryActionText;
+
+  final VoidCallback? onPrimaryAction;
+
+  final String secondaryActionText;
+
+  final VoidCallback? onSecondaryAction;
+
+  final Widget? content;
+
+  final bool isDanger;
 
   @override
   Route<T> createRoute(BuildContext context) {
     return DialogRoute<T>(
       context: context,
-      builder: builder,
       settings: this,
       useSafeArea: false,
-      barrierDismissible: barrierDismissible,
-      barrierColor: barrierColor ?? Colors.black54,
+      barrierDismissible: isDismissible,
+      builder: (context) {
+        return MenoDialog(
+          icon: icon,
+          title: title,
+          description: description,
+          content: content,
+          primaryActionText: primaryActionText,
+          onPrimaryAction: onPrimaryAction,
+          secondaryActionText: secondaryActionText,
+          onSecondaryAction: onSecondaryAction,
+          isDanger: isDanger,
+        );
+      },
     );
   }
 }

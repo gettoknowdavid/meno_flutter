@@ -1,4 +1,4 @@
-import 'dart:io' show File;
+import 'dart:io' show File, Platform;
 
 import 'package:dio/dio.dart' hide Headers;
 import 'package:meno_flutter/src/config/config.dart' show BaseResponse;
