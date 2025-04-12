@@ -184,7 +184,38 @@ class CreateBroadcastRoute extends GoRouteData {
   const CreateBroadcastRoute();
 
   @override
-  Widget build(context, state) => const CreateBroadcastPage();
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: const CreateBroadcastPage(),
+      opaque: false,
+      transitionDuration: const Duration(milliseconds: 500),
+      reverseTransitionDuration: const Duration(milliseconds: 200),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final tween = Tween<Offset>(
+          begin: const Offset(0, 1),
+          end: Offset.zero,
+        );
+
+        // Apply a curve for the bounce effect on entry
+        // Curves.bounceOut or Curves.elasticOut are good choices
+        final curvedAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.elasticOut,
+          reverseCurve: Curves.easeOut,
+        );
+
+        // Create the animation using the tween and the curved animation
+        final customAnimation = tween.animate(curvedAnimation);
+
+        // Use SlideTransition with FadeTransition
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(position: customAnimation, child: child),
+        );
+      },
+    );
+  }
 }
 
 /*
