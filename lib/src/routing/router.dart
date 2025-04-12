@@ -49,6 +49,42 @@ class SwitchAccountModalRoute extends GoRouteData {
   }
 }
 
+/*
+  ###########################
+  ##                       ##
+  ##        DIALOGS        ##
+  ##                       ##
+  ###########################
+*/
+
+@TypedGoRoute<PermissionsRequestRoute>(
+  path: '/permissions-settings-redirect',
+  name: 'Permissions Required',
+)
+class PermissionsRequestRoute extends GoRouteData {
+  const PermissionsRequestRoute({this.permission = 'Microphone'});
+  final String permission;
+
+  @override
+  Page<bool> buildPage(BuildContext context, GoRouterState state) {
+    return DialogPage<bool>(
+      title: 'Permissions Required',
+      description:
+          '''You need to enable $permission permissions in Settings to use this feature. Would you like to open Settings now?''',
+      primaryActionText: 'Open Settings',
+      onPrimaryAction: () => context.pop(true),
+      onSecondaryAction: () => context.pop(false),
+    );
+  }
+}
+
+/*
+  ###########################
+  ##                       ##
+  ##        MODALS         ##
+  ##                       ##
+  ###########################
+*/
 @TypedGoRoute<EditProfileRoute>(path: '/edit-profile', name: 'Edit Profile')
 class EditProfileRoute extends GoRouteData {
   const EditProfileRoute();
@@ -65,6 +101,13 @@ class EditProfileRoute extends GoRouteData {
   }
 }
 
+/*
+  ###########################
+  ##                       ##
+  ##        PAGES          ##
+  ##                       ##
+  ###########################
+*/
 @TypedGoRoute<LoadingRoute>(path: '/loading', name: 'Loading')
 class LoadingRoute extends GoRouteData {
   const LoadingRoute();
@@ -125,7 +168,7 @@ class PasswordRecoveryRoute extends GoRouteData {
   Widget build(context, state) => const PasswordRecoveryPage();
 }
 
-@TypedGoRoute<SettingsRoute>(path: '/settings')
+@TypedGoRoute<SettingsRoute>(path: '/settings', name: 'Settings')
 class SettingsRoute extends GoRouteData {
   const SettingsRoute();
 
@@ -133,6 +176,24 @@ class SettingsRoute extends GoRouteData {
   Widget build(context, state) => const SettingsPage();
 }
 
+@TypedGoRoute<CreateBroadcastRoute>(
+  path: '/create-broadcast',
+  name: 'Create Broadcast',
+)
+class CreateBroadcastRoute extends GoRouteData {
+  const CreateBroadcastRoute();
+
+  @override
+  Widget build(context, state) => const CreateBroadcastPage();
+}
+
+/*
+  ###########################
+  ##                       ##
+  ##      MAIN LAYOUT      ##
+  ##                       ##
+  ###########################
+*/
 @TypedStatefulShellRoute<MenoLayoutRouteData>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
     TypedStatefulShellBranch<HomeShellBranchData>(
@@ -158,11 +219,7 @@ class MenoLayoutRouteData extends StatefulShellRouteData {
 
   @override
   Widget builder(context, state, navigationShell) {
-    return MenoLayout(
-      key: _mainLayoutKey,
-      navigationShell: navigationShell,
-      currentRoute: state.fullPath,
-    );
+    return MenoLayout(key: _mainLayoutKey, navigationShell: navigationShell);
   }
 }
 

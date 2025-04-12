@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/src/routing/router.dart';
+import 'package:meno_flutter/src/services/permissions/permissions.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 const List<Destination> _destinations = [
@@ -11,61 +13,107 @@ const List<Destination> _destinations = [
   Destination(icon: Icon(MIcons.user), label: 'Profile'),
 ];
 
-class MenoLayout extends HookWidget {
-  const MenoLayout({
-    required this.navigationShell,
-    required this.currentRoute,
-    Key? key,
-  }) : super(key: key ?? const ValueKey<String>('MenoLayout'));
+class MenoLayout extends HookConsumerWidget {
+  const MenoLayout({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
-  final String? currentRoute;
 
   @override
-  Widget build(BuildContext context) {
-    final index = navigationShell.currentIndex;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final micPermissions = ref.watch(microphonePermissionsProvider);
+
+    final currentIndex = navigationShell.currentIndex;
     final useSideNavRail = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
 
-    Widget? sideNavRail = const SizedBox();
-    Widget? bottomNavBar = MenoBottomNavigationBar(
-      selectedIndex: index,
-      onTap: onTap,
-      destinations: destinationWidgets(context),
-    );
+    void handleNavigation(int index) {
+      if (index == currentIndex) return;
+
+      return navigationShell.goBranch(
+        index,
+        initialLocation: index == currentIndex,
+      );
+    }
+
+    Future<void> onMicrophoneButtonPressed() async {
+      if (!context.mounted) return;
+
+      final status = micPermissions.value ?? MenoPermissionStatus.denied;
+
+      if (status.isGranted) {
+        await const CreateBroadcastRoute().push(context);
+      }
+
+      if ((status.isPermanentlyDenied || status.isDenied) && context.mounted) {
+        final res = await const PermissionsRequestRoute().push(context);
+        if (res == true && context.mounted) {
+          final notifier = ref.read(microphonePermissionsProvider.notifier);
+          await notifier.openSettings();
+        }
+      }
+    }
 
     if (useSideNavRail) {
-      bottomNavBar = null;
-      sideNavRail = Container();
+      return Scaffold(
+        body: Row(
+          children: [
+            // MenoNavigationRail(
+            //   selectedIndex: currentIndex,
+            //   onDestinationSelected: handleNavigation,
+            //   destinations: _destinations, // Pass raw data
+            //   onMicButtonPressed: handleMicButtonPress, // Delegate action
+            // ),
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(child: navigationShell),
+          ],
+        ),
+      );
     }
 
     return Scaffold(
-      body: Row(children: [sideNavRail, Expanded(child: navigationShell)]),
-      bottomNavigationBar: bottomNavBar,
+      body: navigationShell,
+      bottomNavigationBar: MenoBottomNavigationBar(
+        selectedIndex: currentIndex,
+        onTap: handleNavigation,
+        destinations: _destinationWidgets(
+          context: context,
+          ref: ref,
+          currentIndex: currentIndex,
+          onTap: handleNavigation,
+          onMicButtonPressed: onMicrophoneButtonPressed,
+        ),
+      ),
     );
   }
 
-  void onTap(int index) {
-    return navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
-
-  List<Widget> destinationWidgets(BuildContext context) {
+  List<Widget> _destinationWidgets({
+    required BuildContext context,
+    required WidgetRef ref,
+    required int currentIndex,
+    required ValueChanged<int> onTap,
+    required VoidCallback onMicButtonPressed,
+  }) {
     final widgets = <Widget>[];
-    final itemCount = _destinations.length;
 
-    for (var i = 0; i < itemCount; i++) {
-      if (i == 2) {
-        widgets.add(MenoMicrophoneButton(onPressed: () {}));
+    // Calculate middle index robustly for inserting the microphone button
+    final middleInsertIndex = (_destinations.length / 2).floor();
+
+    for (var i = 0; i < _destinations.length; i++) {
+      if (i == middleInsertIndex) {
+        widgets.add(
+          MenoMicrophoneButton(
+            key: const Key('MenoLayoutMicrophoneButton'),
+            onPressed: onMicButtonPressed,
+          ),
+        );
       }
 
+      final destination = _destinations[i];
       widgets.add(
         NavigationCell(
-          icon: _destinations[i].icon,
-          label: _destinations[i].label,
-          selected: navigationShell.currentIndex == i,
-          onTap: () => onTap.call(i),
+          icon: destination.icon,
+          label: destination.label,
+          selected: currentIndex == i,
+          onTap: () => onTap(i),
         ),
       );
     }
