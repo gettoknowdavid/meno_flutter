@@ -5,6 +5,7 @@ import 'dart:io' show File;
 
 import 'package:equatable/equatable.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/features/profile/profile.dart' show Profile;
 import 'package:meno_flutter/src/services/services.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,90 +13,149 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'broadcast_form_notifier.g.dart';
 
 @riverpod
-class CreateBroadcast extends _$CreateBroadcast {
+class SelectedCoHosts extends _$SelectedCoHosts {
   @override
-  FutureOr<Broadcast> build() async {
-    state = const AsyncLoading();
-    final form = ref.read(broadcastFormProvider);
+  Set<Profile> build() {
+    final cohosts = ref.watch(broadcastFormProvider.select((s) => s.cohosts));
+    return {...cohosts};
+  }
 
-    final timezone = ref.read(timezoneProvider).valueOrNull;
+  void add(Profile user) {
+    final cohosts = Set<Profile>.from(state);
+    cohosts.add(user);
+    state = cohosts;
+  }
 
-    final result = await ref
-        .read(broadcastFacadeProvider)
-        .createBroadcast(
-          title: form.title,
-          description: form.description,
-          cohosts: form.cohosts?.toList(),
-          image: form.image,
-          timezone: timezone,
-        );
-
-    return result.fold(
-      (exception) => throw exception,
-      (broadcast) => broadcast,
-    );
+  void remove(Profile? user) {
+    final cohosts = Set<Profile>.from(state);
+    cohosts.remove(user);
+    state = cohosts;
   }
 }
 
 @riverpod
 class BroadcastForm extends _$BroadcastForm {
   @override
-  BroadcastFormState build() => const BroadcastFormState();
+  BroadcastFormState build() => BroadcastFormState(
+    title: SingleLineString(''),
+    description: MultiLineString(''),
+  );
 
   void titleChanged(String value) {
-    state = state.copyWith(title: SingleLineString(value));
+    state = state.copyWith(
+      title: SingleLineString(value),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   void descriptionChanged(String value) {
-    state = state.copyWith(description: MultiLineString(value));
+    state = state.copyWith(
+      description: MultiLineString(value),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   Future<void> imageChanged({bool fromGallery = true}) async {
     final picker = ref.read(mediaPickerProvider);
     final file = await picker.getImage(fromGallery: fromGallery);
     if (file == null) return;
-    state = state.copyWith(image: ImageFile(File(file.path)));
+    state = state.copyWith(
+      image: ImageFile(File(file.path)),
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
-  void onAddCohost(ID userId) {
-    final cohosts = Set<ID>.from(state.cohosts ?? {});
-    cohosts.add(userId);
-    state = state.copyWith(cohosts: cohosts);
+  void onAddCohost(List<Profile> users) {
+    final cohosts = Set<Profile>.from(state.cohosts);
+    cohosts.addAll(users);
+    state = state.copyWith(
+      cohosts: cohosts,
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
-  void onRemoveCohost(ID userId) {
-    final cohosts = Set<ID>.from(state.cohosts ?? {});
+  void onRemoveCohost(List<Profile> users) {
+    final cohosts = Set<Profile>.from(state.cohosts);
     if (cohosts.isEmpty) return;
-    cohosts.remove(userId);
-    state = state.copyWith(cohosts: cohosts);
+    cohosts.removeAll(users);
+    state = state.copyWith(
+      cohosts: cohosts,
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
   }
 
   void onShouldRecordChanged(bool value) {
-    state = state.copyWith(shouldRecord: value);
+    state = state.copyWith(
+      shouldRecord: value,
+      exception: null,
+      status: MenoFormStatus.initial,
+    );
+  }
+
+  Future<void> submit() async {
+    if (state.status == MenoFormStatus.inProgress) return;
+
+    state = state.copyWith(status: MenoFormStatus.inProgress, exception: null);
+
+    final timezone = ref.read(timezoneProvider).valueOrNull;
+
+    final cohosts = state.cohosts.map((e) => e.id).toList();
+
+    final result = await ref
+        .read(broadcastFacadeProvider)
+        .createBroadcast(
+          title: state.title,
+          description: state.description,
+          cohosts: cohosts,
+          image: state.image,
+          timezone: timezone,
+        );
+
+    state = result.fold(
+      (exception) =>
+          state.copyWith(status: MenoFormStatus.failure, exception: exception),
+      (broadcast) =>
+          state.copyWith(status: MenoFormStatus.success, broadcast: broadcast),
+    );
   }
 }
 
 class BroadcastFormState with EquatableMixin {
   const BroadcastFormState({
-    this.title = SingleLineString.empty,
-    this.description = MultiLineString.empty,
+    required this.title,
+    required this.description,
     this.image,
-    this.cohosts,
+    this.cohosts = const {},
     this.shouldRecord = false,
+    this.status = MenoFormStatus.initial,
+    this.exception,
+    this.broadcast,
   });
 
   final SingleLineString title;
   final MultiLineString description;
   final ImageFile? image;
-  final Set<ID>? cohosts;
+  final Set<Profile> cohosts;
   final bool shouldRecord;
+  final MenoFormStatus status;
+  final BroadcastException? exception;
+  final Broadcast? broadcast;
 
   BroadcastFormState copyWith({
     SingleLineString? title,
     MultiLineString? description,
     ImageFile? image,
-    Set<ID>? cohosts,
+    Set<Profile>? cohosts,
+    // Set<ID>? cohosts,
     bool? shouldRecord,
+    MenoFormStatus? status,
+    BroadcastException? exception,
+    Broadcast? broadcast,
   }) {
     return BroadcastFormState(
       title: title ?? this.title,
@@ -103,152 +163,14 @@ class BroadcastFormState with EquatableMixin {
       image: image ?? this.image,
       cohosts: cohosts ?? this.cohosts,
       shouldRecord: shouldRecord ?? this.shouldRecord,
+      status: status ?? this.status,
+      exception: exception ?? this.exception,
+      broadcast: broadcast ?? this.broadcast,
     );
   }
+
+  bool get isValid => title.isValid && description.isValid;
 
   @override
   List<Object?> get props => [title, description, image, cohosts, shouldRecord];
 }
-
-// @riverpod
-// class BroadcastForm extends _$BroadcastForm {
-//   @override
-//   BroadcastFormState build() => const BroadcastFormState();
-
-//   void titleChanged(String value) {
-//     state = state.copyWith(
-//       title: SingleLineString(value),
-//       exception: null,
-//       status: MenoFormStatus.initial,
-//     );
-//   }
-
-//   void descriptionChanged(String value) {
-//     state = state.copyWith(
-//       description: MultiLineString(value),
-//       exception: null,
-//       status: MenoFormStatus.initial,
-//     );
-//   }
-
-//   Future<void> imageChanged({bool fromGallery = true}) async {
-//     final file = await ref
-//         .read(mediaPickerProvider)
-//         .getImage(fromGallery: fromGallery);
-
-//     if (file != null) {
-//       state = state.copyWith(
-//         image: ImageFile(File(file.path)),
-//         exception: null,
-//         status: MenoFormStatus.initial,
-//       );
-//     }
-//   }
-
-//   void onAddCohost(ID userId) {
-//     final cohosts = Set<ID>.from(state.cohosts ?? {});
-
-//     cohosts.add(userId);
-
-//     state = state.copyWith(
-//       cohosts: cohosts,
-//       exception: null,
-//       status: MenoFormStatus.initial,
-//     );
-//   }
-
-//   void onRemoveCohost(ID userId) {
-//     final cohosts = Set<ID>.from(state.cohosts ?? {});
-
-//     if (cohosts.isEmpty) return;
-
-//     cohosts.remove(userId);
-
-//     state = state.copyWith(
-//       cohosts: cohosts,
-//       exception: null,
-//       status: MenoFormStatus.initial,
-//     );
-//   }
-
-//   void onShouldRecordChanged(bool value) {
-//     state = state.copyWith(
-//       shouldRecord: value,
-//       exception: null,
-//       status: MenoFormStatus.initial,
-//     );
-//   }
-
-//   Future<void> submit() async {
-//     if (state.status == MenoFormStatus.inProgress) return;
-
-    // final timezone = ref.read(timezoneProvider).valueOrNull;
-
-    // final result = await ref
-    //     .read(broadcastFacadeProvider)
-    //     .createBroadcast(
-    //       title: state.title,
-    //       description: state.description,
-    //       cohosts: state.cohosts?.toList(),
-    //       image: state.image,
-    //       timezone: timezone,
-    //     );
-
-//     state = result.fold(
-//       (exception) =>
-//           state.copyWith(status: MenoFormStatus.failure,exception:exception),
-//       (profile) => state.copyWith(status: MenoFormStatus.success),
-//     );
-//   }
-// }
-
-// class BroadcastFormState with EquatableMixin {
-//   const BroadcastFormState({
-//     this.title = SingleLineString.empty,
-//     this.description = MultiLineString.empty,
-//     this.image,
-//     this.cohosts,
-//     this.shouldRecord = false,
-//     this.status = MenoFormStatus.initial,
-//     this.exception,
-//   });
-
-//   final SingleLineString title;
-//   final MultiLineString description;
-//   final ImageFile? image;
-//   final Set<ID>? cohosts;
-//   final MenoFormStatus status;
-//   final bool shouldRecord;
-//   final BroadcastException? exception;
-
-//   BroadcastFormState copyWith({
-//     SingleLineString? title,
-//     MultiLineString? description,
-//     ImageFile? image,
-//     Set<ID>? cohosts,
-//     MenoFormStatus? status,
-//     bool? shouldRecord,
-//     BroadcastException? exception,
-//   }) {
-//     return BroadcastFormState(
-//       title: title ?? this.title,
-//       description: description ?? this.description,
-//       image: image ?? this.image,
-//       cohosts: cohosts ?? this.cohosts,
-//       status: status ?? this.status,
-//       shouldRecord: shouldRecord ?? this.shouldRecord,
-//       exception: exception ?? this.exception,
-//     );
-//   }
-
-//   @override
-//   List<Object?> get props => [
-//     title,
-//     description,
-//     image,
-//     cohosts,
-//     status,
-//     shouldRecord,
-//     exception,
-//   ];
-// }

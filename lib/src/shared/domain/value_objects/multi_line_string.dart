@@ -12,6 +12,7 @@ class MultiLineString extends ValueObject<String> {
   static const MultiLineString empty = MultiLineString._(Right(''));
 
   static Either<ValueException<String>, String> _validateString(String input) {
+    if (input.isEmpty) return const Left(RequiredValueException());
     if (input.length > 244) return Left(LengthExceededValueException(input));
     return Right(input);
   }

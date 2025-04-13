@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/features/auth/presentation/pages/pages.dart';
-import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/features/auth/presentation/presentation.dart';
+import 'package:meno_flutter/src/features/broadcast/presentation/presentation.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
-import 'package:meno_flutter/src/features/profile/application/edit_profile_form.dart';
-import 'package:meno_flutter/src/features/profile/presentation/presentation.dart';
-import 'package:meno_flutter/src/features/settings/settings.dart'
-    show SettingsPage;
+import 'package:meno_flutter/src/features/profile/profile.dart';
+import 'package:meno_flutter/src/features/settings/presentation/presentation.dart';
 import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -92,6 +89,22 @@ class EditProfileRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return ModalPage<void>(builder: (context) => const EditProfileModal());
+  }
+
+  @override
+  FutureOr<bool> onExit(BuildContext context, GoRouterState state) {
+    ProviderScope.containerOf(context).invalidate(editProfileFormProvider);
+    return super.onExit(context, state);
+  }
+}
+
+@TypedGoRoute<AddCohostRoute>(path: '/add-cohost', name: 'Add Co-host')
+class AddCohostRoute extends GoRouteData {
+  const AddCohostRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return ModalPage<void>(builder: (context) => const AddCoHostModal());
   }
 
   @override
@@ -189,7 +202,7 @@ class CreateBroadcastRoute extends GoRouteData {
       key: state.pageKey,
       child: const CreateBroadcastPage(),
       opaque: false,
-      transitionDuration: const Duration(milliseconds: 500),
+      transitionDuration: const Duration(milliseconds: 600),
       reverseTransitionDuration: const Duration(milliseconds: 200),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         final tween = Tween<Offset>(
@@ -201,7 +214,7 @@ class CreateBroadcastRoute extends GoRouteData {
         // Curves.bounceOut or Curves.elasticOut are good choices
         final curvedAnimation = CurvedAnimation(
           parent: animation,
-          curve: Curves.elasticOut,
+          curve: Curves.elasticIn,
           reverseCurve: Curves.easeOut,
         );
 
@@ -209,10 +222,7 @@ class CreateBroadcastRoute extends GoRouteData {
         final customAnimation = tween.animate(curvedAnimation);
 
         // Use SlideTransition with FadeTransition
-        return FadeTransition(
-          opacity: animation,
-          child: SlideTransition(position: customAnimation, child: child),
-        );
+        return SlideTransition(position: customAnimation, child: child);
       },
     );
   }
