@@ -11,7 +11,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: MenoTopBar.secondary(title: title),
+      appBar: const _AppBar(key: Key('HomAppBar')),
       body: Center(
         child: MenoPrimaryButton(
           size: MenoSize.lg,
@@ -21,4 +21,26 @@ class HomePage extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _AppBar extends ConsumerWidget implements PreferredSizeWidget {
+  const _AppBar({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final credential = ref.watch(sessionProvider.select((s) => s.credential));
+    final user = credential.user;
+
+    return MenoHeader.primary(
+      label: 'Hello',
+      title: MenoText.subheading(user.fullName.getOrNull() ?? ''),
+      actions: [
+        MenoIconButton(MIcons.bell_04, onPressed: () {}),
+        MenoAvatar(radius: Insets.lg, url: user.imageUrl),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
