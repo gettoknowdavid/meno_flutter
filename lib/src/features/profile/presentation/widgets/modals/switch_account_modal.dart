@@ -14,12 +14,8 @@ class SwicthAccountModal extends HookConsumerWidget {
 
     final session = ref.watch(sessionProvider);
 
-    ref.listen(sessionProvider.select((s) => s.credential), (previous, next) {
-      if (previous?.user.id != next.user.id) const MyProfileRoute().go(context);
-    });
-
-    final accounts = session.accounts;
-    final credential = session.credential;
+    final accounts = ref.watch(accountsProvider);
+    final credential = session.valueOrNull;
 
     return MenoModal(
       title: 'Switch account',
@@ -28,10 +24,10 @@ class SwicthAccountModal extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (session.accounts.length > 1) ...[
-              ...accounts.entries.map((entry) {
+            if (accounts.hasValue && accounts.value!.length > 1) ...[
+              ...accounts.value!.entries.map((entry) {
                 final user = entry.value.user;
-                final selected = credential.user.id.getOrNull() == entry.key;
+                final selected = credential?.user.id.getOrNull() == entry.key;
 
                 return MenoRadioListTile<UserCredential>(
                   key: ValueKey(entry.key),
@@ -45,7 +41,7 @@ class SwicthAccountModal extends HookConsumerWidget {
                   ),
                   onChanged: (cred) {
                     if (selected) return;
-                    ref.read(sessionProvider.notifier).switchAccount(cred!);
+                    ref.read(accountsProvider.notifier).switchAccount(cred!);
                   },
                 );
               }),

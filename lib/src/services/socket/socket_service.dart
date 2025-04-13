@@ -4,7 +4,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/config/env/env.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/services/socket/socket.dart';
@@ -30,7 +29,7 @@ class Socket extends _$Socket {
           // This prevents redundant attempts if auth emits multiple
           // times quickly
           if (state is SocketDisconnected || state is SocketConnectFailure) {
-            _connect();
+            _connect(credential);
           }
         }
       });
@@ -43,7 +42,7 @@ class Socket extends _$Socket {
 
   io.Socket? get socket => _socket;
 
-  void _connect() {
+  void _connect(UserCredential credential) {
     // Prevent multiple connection attempts if already connecting/connected
     if (state is SocketConnected || state is SocketConnectInProgress) {
       log('Socket already connected or connecting.');
@@ -53,7 +52,6 @@ class Socket extends _$Socket {
     log('Socket connecting...');
     state = const SocketConnectInProgress();
 
-    final credential = ref.watch(sessionProvider.select((s) => s.credential));
     final token = credential.token.getOrNull();
 
     if (token == null) {

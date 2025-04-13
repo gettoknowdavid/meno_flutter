@@ -12,9 +12,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router.g.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final _mainLayoutKey = GlobalKey<NavigatorState>(debugLabel: 'main-layout');
-
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
   final menoRoute = ref.watch(menoRouteNotifierProvider);
@@ -26,7 +23,6 @@ GoRouter router(Ref ref) {
 
   return GoRouter(
     initialLocation: const HomeRoute().location,
-    navigatorKey: _rootNavigatorKey,
     refreshListenable: menoRoute,
     redirect: redirect,
     routes: $appRoutes,
@@ -260,7 +256,7 @@ class MenoLayoutRouteData extends StatefulShellRouteData {
 
   @override
   Widget builder(context, state, navigationShell) {
-    return MenoLayout(key: _mainLayoutKey, navigationShell: navigationShell);
+    return MenoLayout(navigationShell: navigationShell);
   }
 }
 

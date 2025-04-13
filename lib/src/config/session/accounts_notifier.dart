@@ -1,15 +1,15 @@
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'session_notifier.g.dart';
+part 'accounts_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
-class Session extends _$Session {
+class Accounts extends _$Accounts {
   @override
-  AsyncValue<UserCredential?> build() {
+  AsyncValue<Map<String, UserCredential>> build() {
     state = const AsyncLoading();
 
-    ref.listen(authStateChangesProvider, (previous, next) {
+    ref.listen(allAccountsProvider, (previous, next) {
       state = switch (next) {
         AsyncError(:final error) => AsyncError(error, StackTrace.current),
         AsyncData(:final value) => AsyncData(value),
@@ -20,5 +20,8 @@ class Session extends _$Session {
     return state;
   }
 
-  Future<void> logout() => ref.read(authFacadeProvider).logout();
+  Future<void> switchAccount(UserCredential credential) async {
+    final result = await ref.read(authFacadeProvider).switchAccount(credential);
+    result.fold((exception) => state, (success) => null);
+  }
 }
