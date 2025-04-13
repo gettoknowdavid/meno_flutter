@@ -77,12 +77,16 @@ final class Profile with EquatableMixin {
   @override
   List<Object?> get props => [
     id,
-    bio,
-    role,
     fullName,
-    imageUrl,
+    bio,
     stats,
+    imageUrl,
+    role,
     isSubscribedToUser,
+    numberOfBroadcasts,
+    numberOfSubscribers,
+    numberOfSubscriptions,
+    subscribed,
   ];
 }
 

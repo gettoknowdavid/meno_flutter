@@ -71,15 +71,18 @@ class MenoLayout extends HookConsumerWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: MenoBottomNavigationBar(
-        selectedIndex: currentIndex,
-        onTap: handleNavigation,
-        destinations: _destinationWidgets(
-          context: context,
-          ref: ref,
-          currentIndex: currentIndex,
+      bottomNavigationBar: Padding(
+        padding: MediaQuery.viewInsetsOf(context),
+        child: MenoBottomNavigationBar(
+          selectedIndex: currentIndex,
           onTap: handleNavigation,
-          onMicButtonPressed: onMicrophoneButtonPressed,
+          destinations: _destinationWidgets(
+            context: context,
+            ref: ref,
+            currentIndex: currentIndex,
+            onTap: handleNavigation,
+            onMicButtonPressed: onMicrophoneButtonPressed,
+          ),
         ),
       ),
     );

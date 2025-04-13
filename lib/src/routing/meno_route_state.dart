@@ -59,6 +59,7 @@ extension MenoRouteX on MenoRouteState {
         const PermissionsRequestRoute().location,
         const SettingsRoute().location,
         const CreateBroadcastRoute().location,
+        const AddCohostRoute().location,
       },
       _ => {const LoadingRoute().location},
     };

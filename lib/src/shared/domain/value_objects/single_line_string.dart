@@ -15,6 +15,8 @@ class SingleLineString extends ValueObject<String> {
   static const SingleLineString empty = SingleLineString._(Right(''));
 
   static Either<ValueException<String>, String> _validateString(String input) {
+    if (input.isEmpty) return const Left(RequiredValueException());
+
     if (input.contains('\n')) {
       return Left(MaxLinesExceededValueException(input, 1));
     }
