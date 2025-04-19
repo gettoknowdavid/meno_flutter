@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart' show Either, Unit;
+import 'package:dio/dio.dart' show CancelToken;
 import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/features/broadcast/domain/domain.dart';
 import 'package:meno_flutter/src/shared/domain/value_objects/value_objects.dart';
@@ -24,6 +25,13 @@ abstract class IBroadcastFacade {
   });
 
   Future<Either<BroadcastException, PaginatedList<Broadcast?>>> getBroadcasts({
+    /// Sort by a specific broadcast field
+    required String sortBy,
+
+    /// Order by a specific broadcast field
+    /// Example : ASC or DESC
+    required OrderBy orderBy,
+
     /// Status of the broadcast
     /// Example : active or inactive
     String? status,
@@ -41,13 +49,6 @@ abstract class IBroadcastFacade {
 
     /// Return only broadcasts created by a specific user
     ID? creatorId,
-
-    /// Sort by a specific broadcast field
-    String sortBy = 'startTime',
-
-    /// Order by a specific broadcast field
-    /// Example : ASC or DESC
-    OrderBy orderBy = OrderBy.ASC,
 
     /// Used for pagination
     int page = 1,
@@ -72,6 +73,9 @@ abstract class IBroadcastFacade {
 
     /// Equal to start time
     bool? startTimeExist,
+
+    /// To cancel the request
+    CancelToken? cancelToken,
   });
 
   Future<Either<BroadcastException, Broadcast>> joinBroadcast(ID id);

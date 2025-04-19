@@ -1,7 +1,7 @@
 import 'dart:async' show TimeoutException;
 
 import 'package:dartz/dartz.dart' show Either, Left, Right, Unit, unit;
-import 'package:dio/dio.dart' show DioException;
+import 'package:dio/dio.dart' show CancelToken, DioException;
 import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
@@ -79,13 +79,13 @@ class BroadcastFacade implements IBroadcastFacade {
 
   @override
   Future<Either<BroadcastException, PaginatedList<Broadcast?>>> getBroadcasts({
+    required String sortBy,
+    required OrderBy orderBy,
     String? status,
     String? include,
     bool? onlySubscriptions,
     String? keywords,
     ID? creatorId,
-    String sortBy = 'startTime',
-    OrderBy orderBy = OrderBy.DESC,
     int page = 1,
     int size = 8,
     String? endTimeGT,
@@ -94,6 +94,7 @@ class BroadcastFacade implements IBroadcastFacade {
     String? startTimeGT,
     String? startTimeLT,
     bool? startTimeExist,
+    CancelToken? cancelToken,
   }) async {
     try {
       final response = await _remote.getBroadcasts(

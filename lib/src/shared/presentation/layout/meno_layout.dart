@@ -13,7 +13,7 @@ const List<Destination> _destinations = [
   Destination(icon: Icon(MIcons.user), label: 'Profile'),
 ];
 
-class MenoLayout extends HookConsumerWidget {
+class MenoLayout extends ConsumerWidget {
   const MenoLayout({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;

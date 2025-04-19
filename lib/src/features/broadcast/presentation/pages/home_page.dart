@@ -4,26 +4,29 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/config/session/session_notifier.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
-import 'package:meno_flutter/src/routing/routing.dart';
+import 'package:meno_flutter/src/shared/shared.dart' show CurrentUserAvatar;
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({this.title = 'Home', super.key});
-
   final String title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Scaffold(
-      appBar: _AppBar(key: Key('HomAppBar')),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            MenoSpacer.v(32),
-            LiveForYouSection(),
-            NowLiveSection(),
-            RecentlyLiveSection(),
-          ],
+    return Scaffold(
+      appBar: const _AppBar(key: Key('HomAppBar')),
+      body: RefreshIndicator(
+        onRefresh: () => ref.refresh(recentlyLiveBroadcastsProvider.future),
+        child: const SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              MenoSpacer.v(32),
+              LiveForYouSection(),
+              NowLiveSection(),
+              RecentlyLiveSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -48,15 +51,7 @@ class _AppBar extends ConsumerWidget implements PreferredSizeWidget {
       },
       actions: [
         MenoIconButton(MIcons.bell_04, onPressed: () {}),
-        switch (credential) {
-          AsyncData(:final value) => MenoAvatar(
-            radius: Insets.lg,
-            url: value?.user.imageUrl,
-            onTap: () => const MyProfileRoute().go(context),
-          ),
-          AsyncError() => const MenoAvatar(radius: Insets.lg),
-          _ => const MenoAvatar(radius: Insets.lg, isLoading: true),
-        },
+        const CurrentUserAvatar(),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/src/config/constants/constants.dart';
 import 'package:meno_flutter/src/features/auth/presentation/presentation.dart';
 import 'package:meno_flutter/src/features/broadcast/presentation/presentation.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
@@ -220,6 +221,40 @@ class CreateBroadcastRoute extends GoRouteData {
         // Use SlideTransition with FadeTransition
         return SlideTransition(position: customAnimation, child: child);
       },
+    );
+  }
+}
+
+@TypedGoRoute<BroadcastsRoute>(path: '/broadcasts', name: 'Broadcasts')
+class BroadcastsRoute extends GoRouteData {
+  const BroadcastsRoute({
+    required this.type,
+    required this.sortBy,
+    required this.orderBy,
+    this.page = 1,
+    this.size = kPageSize,
+    this.endTimeExists,
+    this.include,
+  });
+
+  final BroadcastsPageType type;
+  final int page;
+  final int size;
+  final String sortBy;
+  final OrderBy orderBy;
+  final bool? endTimeExists;
+  final String? include;
+
+  @override
+  Widget build(context, state) {
+    return BroadcastsPage(
+      type: type,
+      page: page,
+      size: size,
+      sortBy: sortBy,
+      orderBy: orderBy,
+      endTimeExists: endTimeExists,
+      include: include,
     );
   }
 }

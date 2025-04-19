@@ -8,8 +8,7 @@ class MenoSection extends StatelessWidget {
     super.key,
     this.emoji,
     this.onSeeAll,
-    this.sectionContentHeight = 176,
-    this.bottomPadding = 48,
+    this.sectionContentHeight = 224,
   });
 
   final String title;
@@ -17,11 +16,14 @@ class MenoSection extends StatelessWidget {
   final Widget? emoji;
   final VoidCallback? onSeeAll;
 
-  /// Space at the bottom of the section. The default is 48
-  final double bottomPadding;
-
   /// The height of the section. This is used to limit the height of the
-  /// section. The default value is 176.
+  /// section. This includes the bottom padding to be added to the list view.
+  ///
+  /// The default height is 176.
+  ///
+  /// The default bottom padding is 48.
+  ///
+  /// The default total value is 224.
   ///
   final double sectionContentHeight;
 
@@ -50,7 +52,6 @@ class MenoSection extends StatelessWidget {
         ),
         const MenoSpacer.v(24),
         LimitedBox(maxHeight: sectionContentHeight, child: child),
-        MenoSpacer.v(bottomPadding),
       ],
     );
   }
