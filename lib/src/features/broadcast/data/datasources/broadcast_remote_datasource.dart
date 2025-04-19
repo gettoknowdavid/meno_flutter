@@ -118,5 +118,8 @@ abstract class BroadcastRemoteDatasource {
 
     /// Equal to start time
     @Query('startTime[exist]') bool? startTimeExist,
+
+    /// To cancel the request
+    @CancelRequest() CancelToken? cancelToken,
   });
 }

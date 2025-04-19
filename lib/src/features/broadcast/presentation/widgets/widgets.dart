@@ -5,4 +5,5 @@ export 'cohost_widget.dart';
 export 'live_for_you_section.dart';
 export 'meno_section.dart';
 export 'now_live_section.dart';
+export 'recently_live_broadcasts_list_widget.dart';
 export 'recently_live_section.dart';
