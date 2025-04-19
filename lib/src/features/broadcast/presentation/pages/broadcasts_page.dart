@@ -91,9 +91,8 @@ class _SearchBar extends HookConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
-      child: SearchBar(
+      child: MenoSearchBar(
         focusNode: focusNode,
-        scrollPadding: EdgeInsets.zero,
         hintText: 'Search broadcasts',
         onChanged: onSearchChange,
         leading: Icon(MIcons.search, color: colors.labelPlaceholder, size: 16),
