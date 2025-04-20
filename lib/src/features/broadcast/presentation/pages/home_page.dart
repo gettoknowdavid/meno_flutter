@@ -23,8 +23,11 @@ class HomePage extends ConsumerWidget {
             children: [
               MenoSpacer.v(32),
               LiveForYouSection(),
+              MenoSpacer.v(48),
               NowLiveSection(),
+              MenoSpacer.v(48),
               RecentlyLiveSection(),
+              MenoSpacer.v(48),
             ],
           ),
         ),

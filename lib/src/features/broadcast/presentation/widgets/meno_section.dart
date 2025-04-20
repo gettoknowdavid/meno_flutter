@@ -9,7 +9,6 @@ class MenoSection extends StatelessWidget {
     this.emoji,
     this.onSeeAll,
     this.sectionContentHeight = 176,
-    this.bottomPadding = 48,
   });
 
   final String title;
@@ -23,10 +22,6 @@ class MenoSection extends StatelessWidget {
   /// The default height is 176.
   ///
   final double sectionContentHeight;
-
-  /// The default bottom padding is 48.
-  ///
-  final double bottomPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +49,6 @@ class MenoSection extends StatelessWidget {
         ),
         const MenoSpacer.v(24),
         LimitedBox(maxHeight: sectionContentHeight, child: child),
-        MenoSpacer.v(bottomPadding),
       ],
     );
   }
