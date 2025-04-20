@@ -27,7 +27,10 @@ class RecentlyLiveSection extends HookConsumerWidget {
       child: switch (broadcastsAsync) {
         AsyncData(:final value) => _ListWidget(value),
         AsyncLoading() => _ListWidget(fakeBroadcasts, isLoading: true),
-        _ => const Center(child: MenoText.body('Nothing to see here')),
+        AsyncError(:final error) => MenoErrorWidget(
+          (error as BroadcastException).message,
+        ),
+        _ => const SizedBox.shrink(),
       },
     );
   }
@@ -41,13 +44,13 @@ class _ListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (broadcasts.isEmpty) {
-      return const Center(child: MenoText.body('Nothing to see here'));
+      return const MenoEmptyWidget(description: 'No recently live broadcasts');
     }
 
     return Skeletonizer(
       enabled: isLoading,
       child: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 48),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         separatorBuilder: (context, index) => const MenoSpacer.h(24),
