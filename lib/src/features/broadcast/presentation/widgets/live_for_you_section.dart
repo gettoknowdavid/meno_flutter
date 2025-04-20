@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/features/broadcast/broadcast.dart' show MenoSection;
+import 'package:meno_flutter/src/features/broadcast/broadcast.dart'
+    show MenoSection;
+import 'package:meno_flutter/src/routing/routing.dart';
+import 'package:uuid/uuid.dart';
 
 class LiveForYouSection extends HookConsumerWidget {
   const LiveForYouSection({super.key});
@@ -33,7 +36,10 @@ class LiveForYouSection extends HookConsumerWidget {
                     child: MenoSecondaryButton.icon(
                       icon: const Icon(MIcons.compass),
                       label: const Text('Discover'),
-                      onPressed: () {},
+                      onPressed: () {
+                        final broadcastID = const Uuid().v4();
+                        LiveSessionRoute(broadcastID).push(context);
+                      },
                     ),
                   ),
                 ],

@@ -338,3 +338,166 @@ class MyProfileRoute extends GoRouteData {
   @override
   Widget build(context, state) => const MyProfilePage();
 }
+
+/*
+  ###################################
+  ##                               ##
+  ##      LIVE SESSION LAYOUT      ##
+  ##                               ##
+  ###################################
+*/
+@TypedGoRoute<LiveSessionRoute>(path: '/broadcasts/live/:broadcastID')
+class LiveSessionRoute extends GoRouteData {
+  const LiveSessionRoute(this.broadcastID);
+  final String broadcastID;
+
+  @override
+  Widget build(context, state) => LiveSessionPage(broadcastID: broadcastID);
+}
+
+// @TypedGoRoute<LiveRoute>(
+//   path: '/broadcasts/live/:broadcastID',
+//   routes: [
+//     TypedStatefulShellRoute<LiveSessionLayoutRouteData>(
+//       branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
+//         // Branch 1: Broadcast Details Tab
+//         TypedStatefulShellBranch<LiveBroadcastShellBranchData>(
+//           routes: <TypedRoute<RouteData>>[
+//             // Path relative to parent. '/' often used for the 'default' view of a branch.
+//             TypedGoRoute<LiveBroadcastRoute>(
+//               path: 'details',
+//             ), // Becomes /broadcasts/live/:id/details
+//           ],
+//         ),
+//         // Branch 2: Live Chat Tab
+//         TypedStatefulShellBranch<LiveChatShellBranchData>(
+//           routes: <TypedRoute<RouteData>>[
+//             TypedGoRoute<LiveChatRoute>(
+//               path: 'chat',
+//             ), // Becomes /broadcasts/live/:id/chat
+//           ],
+//         ),
+//         // Branch 3: Live Bible Tab
+//         TypedStatefulShellBranch<LiveBibleShellBranchData>(
+//           routes: <TypedRoute<RouteData>>[
+//             TypedGoRoute<LiveBibleRoute>(
+//               path: 'bible',
+//             ), // Becomes /broadcasts/live/:id/bible
+//           ],
+//         ),
+//         // Branch 4: Live Notes Tab
+//         TypedStatefulShellBranch<LiveNotesShellBranchData>(
+//           routes: <TypedRoute<RouteData>>[
+//             TypedGoRoute<LiveNotesRoute>(
+//               path: 'notes',
+//             ), // Becomes /broadcasts/live/:id/notes
+//           ],
+//         ),
+//       ],
+//       // We'll use the instance builder in LiveSessionShellRouteData
+//     ),
+//   ],
+// )
+// class LiveRoute extends GoRouteData {
+//   const LiveRoute({required this.broadcastID});
+//   final String broadcastID;
+
+//   @override
+//   Widget build(context, state) => const SizedBox.shrink();
+// }
+
+// @TypedStatefulShellRoute<LiveSessionLayoutRouteData>(
+//   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
+//     TypedStatefulShellBranch<LiveBroadcastShellBranchData>(
+//       routes: <TypedRoute<RouteData>>[
+//         TypedGoRoute<LiveBroadcastRoute>(path: '/broadasts/live/:broadcastID/details'),
+//       ],
+//     ),
+//     TypedStatefulShellBranch<LiveChatShellBranchData>(
+//       routes: <TypedRoute<RouteData>>[
+//         TypedGoRoute<LiveChatRoute>(path: '/broadasts/live/:broadcastID/chat'),
+//       ],
+//     ),
+//     TypedStatefulShellBranch<LiveBibleShellBranchData>(
+//       routes: <TypedRoute<RouteData>>[
+//         TypedGoRoute<LiveBibleRoute>(
+//           path: '/broadasts/live/:broadcastID/bible',
+//         ),
+//       ],
+//     ),
+//     TypedStatefulShellBranch<LiveNotesShellBranchData>(
+//       routes: <TypedRoute<RouteData>>[
+//         TypedGoRoute<LiveNotesRoute>(
+//           path: '/broadasts/live/:broadcastID/notes',
+//         ),
+//       ],
+//     ),
+//   ],
+// )
+// class LiveSessionLayoutRouteData extends StatefulShellRouteData {
+//   const LiveSessionLayoutRouteData();
+
+//   static const String $restorationScopeId = 'LiveSessionLayoutRestorationID';
+
+//   static Widget $navigatorContainerBuilder(
+//     BuildContext context,
+//     StatefulNavigationShell navigationShell,
+//     List<Widget> children,
+//   ) {
+//     return LiveSessionLayout(
+//       navigationShell: navigationShell,
+//       children: children,
+//     );
+//   }
+
+//   @override
+//   Widget builder(context, state, navigationShell) => navigationShell;
+// }
+
+// class LiveBroadcastShellBranchData extends StatefulShellBranchData {
+//   const LiveBroadcastShellBranchData();
+// }
+
+// class LiveBroadcastRoute extends GoRouteData {
+//   const LiveBroadcastRoute({required this.broadcastID});
+//   final String broadcastID;
+
+//   @override
+//   Widget build(context, state) => const LiveBroadcastTab();
+// }
+
+// class LiveChatShellBranchData extends StatefulShellBranchData {
+//   const LiveChatShellBranchData();
+// }
+
+// class LiveChatRoute extends GoRouteData {
+//   const LiveChatRoute({required this.broadcastID});
+//   final String broadcastID;
+
+//   @override
+//   Widget build(context, state) => const LiveChatTab();
+// }
+
+// class LiveBibleShellBranchData extends StatefulShellBranchData {
+//   const LiveBibleShellBranchData();
+// }
+
+// class LiveBibleRoute extends GoRouteData {
+//   const LiveBibleRoute({required this.broadcastID});
+//   final String broadcastID;
+
+//   @override
+//   Widget build(context, state) => const LiveBibleTab();
+// }
+
+// class LiveNotesShellBranchData extends StatefulShellBranchData {
+//   const LiveNotesShellBranchData();
+// }
+
+// class LiveNotesRoute extends GoRouteData {
+//   const LiveNotesRoute({required this.broadcastID});
+//   final String broadcastID;
+
+//   @override
+//   Widget build(context, state) => const LiveNotesTab();
+// }
