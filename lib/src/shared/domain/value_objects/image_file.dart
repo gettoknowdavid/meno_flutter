@@ -24,6 +24,6 @@ class ImageFile extends ValueObject<File?> {
       return Left(InvalidFileFormatException<File?>(input));
     }
 
-    return const Right(null);
+    return Right(input);
   }
 }
