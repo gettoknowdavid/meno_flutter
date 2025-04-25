@@ -111,9 +111,14 @@ class _ImageField extends HookConsumerWidget {
     final url = ref.watch(
       editProfileFormProvider.select((s) => s.profile?.imageUrl),
     );
+
     final file = ref.watch(editProfileFormProvider.select((s) => s.image));
 
-    void onTap() => ref.read(editProfileFormProvider.notifier).imageChanged();
+    Future<void> onTap() async {
+      final source = await context.showImageSourceModal();
+      if (source == null) return;
+      await ref.read(editProfileFormProvider.notifier).imageChanged(source);
+    }
 
     return SizedBox.square(
       dimension: 96,

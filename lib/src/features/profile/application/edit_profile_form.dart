@@ -46,11 +46,10 @@ class EditProfileForm extends _$EditProfileForm {
     );
   }
 
-  Future<void> imageChanged({bool fromGallery = true}) async {
-    final file = await ref
-        .read(mediaPickerProvider)
-        .getImage(fromGallery: fromGallery);
-
+  Future<void> imageChanged([
+    MenoImageSource source = MenoImageSource.gallery,
+  ]) async {
+    final file = await ref.read(mediaPickerProvider).getImage(source);
     if (file != null) {
       state = state.copyWith(
         image: ImageFile(File(file.path)),

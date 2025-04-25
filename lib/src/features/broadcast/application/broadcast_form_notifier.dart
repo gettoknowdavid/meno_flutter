@@ -57,9 +57,11 @@ class BroadcastForm extends _$BroadcastForm {
     );
   }
 
-  Future<void> imageChanged({bool fromGallery = true}) async {
-    final picker = ref.read(mediaPickerProvider);
-    final file = await picker.getImage(fromGallery: fromGallery);
+  Future<void> imageChanged([
+    MenoImageSource source = MenoImageSource.gallery,
+  ]) async {
+    final picker = ref.watch(mediaPickerProvider);
+    final file = await picker.getImage(source);
     if (file == null) return;
     state = state.copyWith(
       image: ImageFile(File(file.path)),
