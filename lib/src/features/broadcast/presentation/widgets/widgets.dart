@@ -10,7 +10,6 @@ export 'cohost_widget.dart';
 export 'live_bible_tab.dart';
 export 'live_broadcast_options_modal.dart';
 export 'live_broadcast_tab.dart';
-export 'live_chat_tab.dart';
 export 'live_for_you_section.dart';
 export 'live_notes_tab.dart';
 export 'meno_section.dart';
