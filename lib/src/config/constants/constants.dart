@@ -1,4 +1,5 @@
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/features/chat/chat.dart' show Chat, ChatSender;
 import 'package:meno_flutter/src/features/profile/profile.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 
@@ -141,5 +142,56 @@ final fakeParticipants = [
   Participant(
     id: ID.fromString('b523f625-4854-4a7b-8c5f-64c490dd15fe'),
     fullName: SingleLineString('Godson Obielum'),
+  ),
+];
+
+final fakeChats = <Chat>[
+  Chat(
+    id: ID.fromString('341cc1f3-75ff-405f-9146-c2e3d29626ac'),
+    content: MultiLineString('hellooooooooo'),
+    createdAt: DateTime.now(),
+    broadcastId: ID.fromString('a195065a-51c4-4431-ad2d-5fa696410bfe'),
+    sender: ChatSender(
+      id: ID.fromString('e286c60c-44f9-4c75-aa37-b37cacb08f0f'),
+      imageUrl:
+          'https://res.cloudinary.com/gson007/image/upload/v1675736736/h70lwdr2blycezkv1l9q.jpg',
+      fullName: SingleLineString('Bayo Daini'),
+    ),
+  ),
+  Chat(
+    id: ID.fromString('cd5301a9-a233-43a7-a4e5-fd3158b1c94a'),
+    content: MultiLineString('Testing'),
+    createdAt: DateTime.now(),
+    broadcastId: ID.fromString('a195065a-51c4-4431-ad2d-5fa696410bfe'),
+    sender: ChatSender(
+      id: ID.fromString('3e43bf4d-7ab1-4d30-92d7-02fedf2d5ed1'),
+      imageUrl:
+          'https://res.cloudinary.com/gson007/image/upload/v1698913558/nephz6baho5wgkg8wrz0.jpg',
+      fullName: SingleLineString('David Michael III'),
+    ),
+  ),
+  Chat(
+    id: ID.fromString('79e365e1-0beb-42b3-b9b0-4ceebab77358'),
+    content: MultiLineString('Can you see this???'),
+    createdAt: DateTime.now(),
+    broadcastId: ID.fromString('a195065a-51c4-4431-ad2d-5fa696410bfe'),
+    sender: ChatSender(
+      id: ID.fromString('e286c60c-44f9-4c75-aa37-b37cacb08f0f'),
+      imageUrl:
+          'https://res.cloudinary.com/gson007/image/upload/v1675736736/h70lwdr2blycezkv1l9q.jpg',
+      fullName: SingleLineString('Bayo Daini'),
+    ),
+  ),
+  Chat(
+    id: ID.fromString('dd7142b2-3966-4108-962a-73e976caa6c7'),
+    content: MultiLineString('Can you see my chats?'),
+    createdAt: DateTime.now(),
+    broadcastId: ID.fromString('a195065a-51c4-4431-ad2d-5fa696410bfe'),
+    sender: ChatSender(
+      id: ID.fromString('e286c60c-44f9-4c75-aa37-b37cacb08f0f'),
+      imageUrl:
+          'https://res.cloudinary.com/gson007/image/upload/v1675736736/h70lwdr2blycezkv1l9q.jpg',
+      fullName: SingleLineString('Bayo Daini'),
+    ),
   ),
 ];
