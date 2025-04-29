@@ -31,6 +31,7 @@ dependencies:
   intl: ^0.20.2
   json_annotation: ^4.9.0
   jwt_decoder: ^2.0.1
+  livekit_client: 2.4.5
   meno_design_system:
     path: ../meno_design_system
   meta: ^1.16.0
