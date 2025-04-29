@@ -3,6 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/routing/router.dart';
+import 'package:meno_flutter/src/shared/presentation/presentation.dart';
 import 'package:meno_flutter/src/shared/shared.dart' show MenoFormStatus;
 
 final _formKey = GlobalKey<FormState>();
@@ -18,7 +20,9 @@ class BroadcastFormWidget extends HookConsumerWidget {
         case MenoFormStatus.initial:
           return;
         case MenoFormStatus.success:
-          // const 
+          final broadcastID = next.broadcast!.id;
+          ref.read(liveBroadcastIDProvider.notifier).state = broadcastID;
+          LiveSessionRoute(broadcastID.getOrCrash()).push(context);
         case MenoFormStatus.failure:
           final message = next.exception!.message;
           MenoSnackBar.error(
@@ -60,6 +64,7 @@ class _ArtworkField extends HookConsumerWidget {
     final notifier = ref.read(broadcastFormProvider.notifier);
     final file = ref.watch(broadcastFormProvider.select((s) => s.image));
     final status = ref.watch(broadcastFormProvider.select((s) => s.status));
+
     return Center(
       child: SizedBox(
         width: 167,
@@ -68,7 +73,11 @@ class _ArtworkField extends HookConsumerWidget {
             MenoAvatar(radius: 48, file: file?.getOrNull()),
             MenoTertiaryButton(
               disabled: status == MenoFormStatus.inProgress,
-              onPressed: notifier.imageChanged,
+              onPressed: () async {
+                final source = await context.showImageSourceModal();
+                if (source == null) return;
+                await notifier.imageChanged(source);
+              },
               child: const Text('Choose an artwork'),
             ),
             MenoText.micro(

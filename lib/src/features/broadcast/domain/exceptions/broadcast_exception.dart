@@ -27,6 +27,10 @@ final class BroadcastNetworkException extends BroadcastException {
   const BroadcastNetworkException([super.message = 'Network exception']);
 }
 
+final class BroadcastNotFoundException extends BroadcastException {
+  const BroadcastNotFoundException([super.message = 'Broadcast not found']);
+}
+
 final class BroadcastExceptionWithMessage extends BroadcastException {
   const BroadcastExceptionWithMessage(super.message);
 }

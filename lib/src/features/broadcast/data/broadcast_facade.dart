@@ -81,6 +81,7 @@ class BroadcastFacade implements IBroadcastFacade {
   Future<Either<BroadcastException, PaginatedList<Broadcast?>>> getBroadcasts({
     required String sortBy,
     required OrderBy orderBy,
+    ID? id,
     String? status,
     String? include,
     bool? onlySubscriptions,
@@ -100,6 +101,7 @@ class BroadcastFacade implements IBroadcastFacade {
       final response = await _remote.getBroadcasts(
         status: status,
         include: include,
+        id: id?.getOrNull(),
         onlySubscriptions: onlySubscriptions,
         keywords: keywords,
         creatorId: creatorId?.getOrNull(),

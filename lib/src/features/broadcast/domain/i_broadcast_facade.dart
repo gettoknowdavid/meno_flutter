@@ -32,6 +32,9 @@ abstract class IBroadcastFacade {
     /// Example : ASC or DESC
     required OrderBy orderBy,
 
+    /// [ID] of the broadcast
+    ID? id,
+
     /// Status of the broadcast
     /// Example : active or inactive
     String? status,

@@ -67,6 +67,11 @@ abstract class BroadcastRemoteDatasource {
     /// Example : active or inactive
     @Query('status') String? status,
 
+    /// ID of the broadcast
+    ///
+    /// Example : 14bd1d3a-5885-4ba2-838a-415d7a309a26
+    @Query('id') String? id,
+
     /// Adds an extra field to each broadcast response with the number of
     /// listeners that tuned in
     ///

@@ -61,7 +61,8 @@ extension MenoRouteX on MenoRouteState {
         const CreateBroadcastRoute().location,
         const AddCohostRoute().location,
         '/broadcasts',
-        '/broadcasts/live/:broadcastID',
+        '/broadcasts/live/:id',
+        '/particpants/:id',
       },
       _ => {const LoadingRoute().location},
     };

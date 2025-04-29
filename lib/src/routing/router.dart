@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/config/constants/constants.dart';
 import 'package:meno_flutter/src/features/auth/presentation/presentation.dart';
+import 'package:meno_flutter/src/features/broadcast/domain/entities/participant_role.dart';
 import 'package:meno_flutter/src/features/broadcast/presentation/presentation.dart';
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
 import 'package:meno_flutter/src/features/profile/profile.dart';
@@ -102,6 +103,29 @@ class AddCohostRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return ModalPage<void>(builder: (context) => const AddCoHostModal());
+  }
+
+  @override
+  FutureOr<bool> onExit(BuildContext context, GoRouterState state) {
+    ProviderScope.containerOf(context).invalidate(editProfileFormProvider);
+    return super.onExit(context, state);
+  }
+}
+
+@TypedGoRoute<ParticipantInfoRoute>(
+  path: '/particpants/:id',
+  name: 'Participant Info',
+)
+class ParticipantInfoRoute extends GoRouteData {
+  const ParticipantInfoRoute(this.id, {this.role});
+  final String id;
+  final ParticipantRole? role;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return ModalPage<void>(
+      builder: (context) => ParticipantInfoModal(id, role: role),
+    );
   }
 
   @override
@@ -340,17 +364,17 @@ class MyProfileRoute extends GoRouteData {
 }
 
 /*
-  ###################################
-  ##                               ##
-  ##      LIVE SESSION LAYOUT      ##
-  ##                               ##
-  ###################################
+  #################################
+  ##                             ##
+  ##      LIVE SESSION PAGE      ##
+  ##                             ##
+  #################################
 */
-@TypedGoRoute<LiveSessionRoute>(path: '/broadcasts/live/:broadcastID')
+@TypedGoRoute<LiveSessionRoute>(path: '/broadcasts/live/:id')
 class LiveSessionRoute extends GoRouteData {
-  const LiveSessionRoute(this.broadcastID);
-  final String broadcastID;
+  const LiveSessionRoute(this.id);
+  final String id;
 
   @override
-  Widget build(context, state) => LiveSessionPage(broadcastID: broadcastID);
+  Widget build(context, state) => LiveSessionPage(broadcastID: id);
 }

@@ -21,9 +21,19 @@ class ModalPage<T> extends Page<void> {
 
   @override
   Route<T> createRoute(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
+    final maxHeight = size.height * 0.85;
+    final maxWidth = size.width;
+
+    final defaultConstraint = BoxConstraints(
+      maxHeight: maxHeight,
+      maxWidth: maxWidth,
+    );
+
     return ModalBottomSheetRoute<T>(
       builder: builder,
-      constraints: constraints,
+      constraints: constraints ?? defaultConstraint,
       backgroundColor: MenoColorScheme.of(context).sectionPrimary,
       isScrollControlled: isScrollControlled,
       isDismissible: isDismissible,
