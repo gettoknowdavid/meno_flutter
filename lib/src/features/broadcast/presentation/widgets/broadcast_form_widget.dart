@@ -21,7 +21,8 @@ class BroadcastFormWidget extends HookConsumerWidget {
           return;
         case MenoFormStatus.success:
           final broadcastID = next.broadcast!.id;
-          ref.read(liveBroadcastIDProvider.notifier).state = broadcastID;
+          ref.read(broadcastIDProvider.notifier).state = broadcastID;
+          ref.read(liveBroadcastProvider.notifier).initialize();
           LiveSessionRoute(broadcastID.getOrCrash()).push(context);
         case MenoFormStatus.failure:
           final message = next.exception!.message;

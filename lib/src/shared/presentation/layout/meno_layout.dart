@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/src/features/broadcast/application/ended_broadcast_event.dart';
 import 'package:meno_flutter/src/routing/router.dart';
 import 'package:meno_flutter/src/services/permissions/permissions.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -51,6 +54,17 @@ class MenoLayout extends ConsumerWidget {
         }
       }
     }
+
+    ref.listen(endedBroadcastProvider, (previous, next) {
+      switch (next) {
+        case AsyncError(:final error):
+          final message = (error as SocketException).message;
+          MenoSnackBar.error(message);
+        case AsyncData(:final value):
+          MenoSnackBar.show('Broadcast ended: ${value.reason.message}');
+        default:
+      }
+    });
 
     if (useSideNavRail) {
       return Scaffold(

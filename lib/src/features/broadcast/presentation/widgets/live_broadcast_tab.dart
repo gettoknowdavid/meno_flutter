@@ -83,7 +83,9 @@ class _BroadcastAboutTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = MenoColorScheme.of(context);
-    final broadcast = ref.watch(liveBroadcastProvider);
+    final state = ref.watch(liveBroadcastProvider);
+    final isLoading = state.status == MenoLiveStatus.inProgress;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
       child: Column(
@@ -101,21 +103,13 @@ class _BroadcastAboutTab extends ConsumerWidget {
             ],
           ),
           const MenoSpacer.v(Insets.lg),
-          switch (broadcast) {
-            AsyncData(:final value) => MenoText.caption(
-              value.description.getOrCrash(),
-              weight: MenoFontWeight.regular,
-              color: colors.labelDisabled,
-            ),
-            AsyncLoading() => Skeletonizer(
-              child: MenoText.caption(
-                BoneMock.longParagraph,
-                weight: MenoFontWeight.regular,
-                color: colors.labelDisabled,
-              ),
-            ),
-            _ => const SizedBox.shrink(),
-          },
+          MenoText.caption(
+            isLoading
+                ? BoneMock.longParagraph
+                : state.broadcast.description.getOrCrash(),
+            weight: MenoFontWeight.regular,
+            color: colors.labelDisabled,
+          ),
         ],
       ),
     );

@@ -22,21 +22,18 @@ class BroadcastArtworkWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final broadcast = ref.watch(liveBroadcastProvider);
+    final state = ref.watch(liveBroadcastProvider);
 
     return Container(
       height: outerBoxHeight,
       width: outerBoxWidth,
       padding: boxPadding,
       alignment: Alignment.center,
-      child: switch (broadcast) {
-        AsyncLoading() => MenoAvatar(radius: radius, isLoading: true),
-        AsyncData(:final value) => MenoAvatar(
-          radius: radius,
-          url: value.imageUrl,
-        ),
-        _ => MenoAvatar(radius: radius),
-      },
+      child: MenoAvatar(
+        radius: radius,
+        url: state.broadcast.imageUrl,
+        isLoading: state.status == MenoLiveStatus.inProgress,
+      ),
     );
   }
 }

@@ -10,13 +10,15 @@ class BroadcastTitleWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final broadcast = ref.watch(liveBroadcastProvider);
+    final state = ref.watch(liveBroadcastProvider);
+    final isLoading = state.status == MenoLiveStatus.inProgress;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
       child: Skeletonizer(
-        enabled: broadcast.isLoading,
+        enabled: isLoading,
         child: MenoText.subheading(
-          broadcast.valueOrNull?.title.getOrNull() ?? BoneMock.title,
+          isLoading ? BoneMock.title : state.broadcast.title.getOrCrash(),
           weight: MenoFontWeight.bold,
           maxLines: maxLines,
           overflow: TextOverflow.ellipsis,

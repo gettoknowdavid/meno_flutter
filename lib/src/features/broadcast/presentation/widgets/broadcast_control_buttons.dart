@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/services/live_kit/live_kit.dart';
+import 'package:meno_flutter/src/services/live_kit/microphone.dart';
 
 class BroadcastControlButtons extends ConsumerWidget {
   const BroadcastControlButtons({super.key});
@@ -23,15 +25,18 @@ class BroadcastControlButtons extends ConsumerWidget {
   }
 }
 
-class _MicrophoneButton extends StatelessWidget {
+class _MicrophoneButton extends ConsumerWidget {
   const _MicrophoneButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(microphoneProvider.notifier);
+    final isEnabled = ref.watch(microphoneProvider);
+
     final colors = MenoColorScheme.of(context);
     return MenoIconButton.filled(
-      MIcons.microphone,
-      onPressed: () {},
+      isEnabled ? MIcons.microphone : MIcons.microphone_off,
+      onPressed: notifier.toggleMicMute,
       color: colors.brandPrimary,
       iconSize: 20,
       fillColor: colors.brandPrimaryLighter,
@@ -40,21 +45,40 @@ class _MicrophoneButton extends StatelessWidget {
   }
 }
 
-class _StartStopButton extends StatelessWidget {
+class _StartStopButton extends ConsumerWidget {
   const _StartStopButton({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final broadcastNotifier = ref.read(liveBroadcastProvider.notifier);
+    final livekit = ref.watch(liveKitProvider);
+
     return MenoDangerButton(
-      onPressed: () {},
+      onPressed: livekit.maybeWhen(
+        orElse: () => broadcastNotifier.endBroadcast,
+        data: (data) {
+          final isConnected = data?.isConnected ?? false;
+          if (isConnected) return broadcastNotifier.endBroadcast;
+          return broadcastNotifier.startBroadcast;
+        },
+      ),
       variant: MenoDangerButtonVariant.lighter,
+      isLoading:
+          ref.watch(liveBroadcastProvider).status == MenoLiveStatus.inProgress,
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: Insets.xlg),
         shape: const RoundedRectangleBorder(
           borderRadius: MenoBorderRadius.circle,
         ),
       ),
-      child: const Text('Stop broadcasting'),
+      child: livekit.maybeWhen(
+        orElse: () => const Text('Start broadcasting'),
+        data: (data) {
+          final isConnected = data?.isConnected ?? false;
+          if (isConnected) return const Text('Stop broadcasting');
+          return const Text('Start broadcasting');
+        },
+      ),
     );
   }
 }

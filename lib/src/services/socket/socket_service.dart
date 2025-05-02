@@ -157,65 +157,60 @@ class Socket extends _$Socket {
     });
   }
 
-  /// Emits an event with optional acknowledgment.
-  /// Returns true if the event was emitted successfully, false otherwise.
-  Future<bool> emitWithAck(
-    String event,
-    dynamic data, {
-    Duration? timeout,
-    Function(dynamic)? ack,
-  }) async {
+  /// Emits an event and waits for an acknowledgment from the server.
+  ///
+  /// Returns a Future that completes with the acknowledgment data from the
+  /// server.
+  ///
+  /// The Future will complete with an error if:
+  /// - The socket is not connected.
+  /// - An error occurs during the emit process locally.
+  /// - The acknowledgment times out (if timeout is provided).
+  ///
+  /// The acknowledgment data itself might contain an error indicator
+  /// from the server (e.g., {'error': 'Something went wrong'}), which
+  /// needs to be checked by the caller.
+  ///
+  Future<dynamic> emitWithAck(String event, dynamic data) async {
+    // Check connection state BEFORE creating the completer
     if (state is! SocketConnected || _socket == null) {
       log('Emit failed: Socket not connected.');
-      // Call ack with error if provided
-      ack?.call({'error': 'Socket not connected'});
-      return false;
+      // Throw an exception that can be caught by the caller
+      throw const SocketException('Socket not connected');
     }
 
-    final completer = Completer<bool>();
-    Function ackWrapper;
-
-    if (ack != null) {
-      ackWrapper = (dynamic response) {
-        ack(response);
-        if (!completer.isCompleted) completer.complete(true);
-      };
-    } else {
-      ackWrapper = () {
-        // Still need an ack for completion signal if none provided by caller
-        if (!completer.isCompleted) completer.complete(true);
-      };
-    }
+    // Use Completer<dynamic> to hold the ack response data
+    final completer = Completer<dynamic>();
 
     try {
       log('Emitting event: $event');
-      _socket!.emitWithAck(event, data, ack: ackWrapper);
 
-      // Handle timeout if specified
-      if (timeout != null) {
-        Future.delayed(timeout, () {
-          if (!completer.isCompleted) {
-            log('Emit ack timeout for event: $event');
-            completer.complete(false);
-          }
-        });
-      } else {
-        // If no timeout and no ack expected from server, complete immediately
-        // Note: This assumes emit itself is synchronous locally which it is.
-        // However, if caller passes ack=null, it implies fire-and-forget,
-        // so maybe completing immediately is fine. Let's stick with ackWrapper.
+      // The ack function provided to the socket.io client
+      // will complete our completer with the server response.
+      void ackWrapper(dynamic response) {
+        log('Received ack for event $event: $response');
+        if (!completer.isCompleted) completer.complete(response);
       }
 
+      _socket!.emitWithAck(event, data, ack: ackWrapper);
+
+      // Return the future that will complete with the ack response or error
       return completer.future;
     } on Exception catch (e) {
       log('Error emitting event $event: $e');
-      if (!completer.isCompleted) completer.complete(false);
-      return false;
+
+      // Ensure completer fails if it hasn't already
+      if (!completer.isCompleted) {
+        completer.completeError(e);
+      }
+
+      // Rethrow or throw a specific exception if needed
+      throw SocketException('Failed to emit event $event: $e');
     }
   }
 
   // Simpler fire-and-forget emit
-  bool emit(String event, dynamic data) {
+  bool emit(String event, dynamic data, {Function? ack}) {
     if (state is! SocketConnected || _socket == null) {
       log('Emit (simple) failed: Socket not connected.');
       return false;
@@ -223,7 +218,7 @@ class Socket extends _$Socket {
 
     try {
       log('Emitting event (simple): $event');
-      _socket!.emitWithAck(event, data);
+      _socket!.emitWithAck(event, data, ack: ack);
       return true;
     } on Exception catch (e) {
       log('Error emitting event (simple) $event: $e');

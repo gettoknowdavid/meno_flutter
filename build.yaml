@@ -16,3 +16,4 @@ targets:
         generate_for:
           - lib/**/dtos/*.dart
           - lib/src/config/network/*.dart
+          - lib/src/features/broadcast/application/ended_broadcast_event.dart

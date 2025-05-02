@@ -10,22 +10,21 @@ class BroadcastCreatorWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = MenoColorScheme.of(context);
-    final broadcast = ref.watch(liveBroadcastProvider);
 
-    final creator = switch (broadcast) {
-      AsyncLoading() => 'Celebration Church Int’l',
-      AsyncData(:final value) =>
-        value.creator?.fullName.getOrNull() ??
-            value.creatorFullName?.getOrNull() ??
-            value.fullName?.getOrNull() ??
-            '',
-      _ => '',
-    };
+    final state = ref.watch(liveBroadcastProvider);
+    final isLoading = state.status == MenoLiveStatus.inProgress;
+    final broadcast = state.broadcast;
+
+    final creator =
+        broadcast.creator?.fullName.getOrNull() ??
+        broadcast.creatorFullName?.getOrNull() ??
+        broadcast.fullName?.getOrNull() ??
+        '';
 
     return Skeletonizer(
-      enabled: broadcast.isLoading,
+      enabled: isLoading,
       child: MenoText.caption(
-        creator,
+        isLoading ? BoneMock.title : creator,
         color: colors.labelDisabled,
         weight: MenoFontWeight.regular,
         maxLines: 1,

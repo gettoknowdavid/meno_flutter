@@ -26,3 +26,9 @@ final class SocketConnectFailure extends SocketState {
   const SocketConnectFailure(this.exception);
   final SocketException exception;
 }
+
+final class SocketEventException extends SocketState {
+  const SocketEventException(this.event, this.exception);
+  final String event;
+  final SocketException exception;
+}

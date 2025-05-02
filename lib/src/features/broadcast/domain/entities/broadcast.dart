@@ -24,6 +24,12 @@ class Broadcast with EquatableMixin {
     this.creatorImageUrl,
   });
 
+  factory Broadcast.empty() => Broadcast(
+    id: ID.fromString(''),
+    title: SingleLineString(''),
+    description: MultiLineString(''),
+  );
+
   final ID id;
   final SingleLineString title;
   final MultiLineString description;

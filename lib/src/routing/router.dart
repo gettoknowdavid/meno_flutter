@@ -376,5 +376,5 @@ class LiveSessionRoute extends GoRouteData {
   final String id;
 
   @override
-  Widget build(context, state) => LiveSessionPage(broadcastID: id);
+  Widget build(context, state) => const LiveSessionPage();
 }
