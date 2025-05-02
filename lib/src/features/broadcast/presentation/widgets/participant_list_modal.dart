@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/config/constants/constants.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 
 class ParticipantListModal extends HookConsumerWidget {
   const ParticipantListModal({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final participants = ref.watch(participantsProvider);
+
     return MenoModal(
-      title: 'Listening (23)',
+      title: switch (participants) {
+        AsyncData(:final value) => 'Listening (${value.length})',
+        _ => 'Listening (0)',
+      },
       padding: EdgeInsets.zero,
       builder: (context) {
-        return SingleChildScrollView(
+        return const SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.lg),
                 child: MenoSearchBar(hintText: 'Search for a listener...'),
               ),
-              const MenoSpacer.v(Insets.lg),
-              ParticipantListWidget(participants: fakeParticipants),
+              MenoSpacer.v(Insets.lg),
+              ParticipantListWidget(),
             ],
           ),
         );

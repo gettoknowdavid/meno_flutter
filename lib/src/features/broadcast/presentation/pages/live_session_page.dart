@@ -73,6 +73,10 @@ class LiveSessionPage extends HookConsumerWidget {
 
           final isMicEnabled = ref.read(microphoneProvider);
           log('IS MIC ENABLED? => $isMicEnabled');
+        case AsyncData(:final value):
+          if (value) {
+            ref.read(participantsProvider.notifier).build();
+          }
         default:
       }
     });

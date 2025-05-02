@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart'
     show Participant, ParticipantRole;
+import 'package:meno_flutter/src/services/live_kit/microphone.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ParticipantWidget extends StatelessWidget {
@@ -61,12 +63,14 @@ class ParticipantWidget extends StatelessWidget {
   }
 }
 
-class _Microhpone extends StatelessWidget {
+class _Microhpone extends ConsumerWidget {
   const _Microhpone({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = MenoColorScheme.of(context);
+
+    final micEnabled = ref.watch(microphoneProvider);
 
     return Skeleton.ignore(
       child: Container(
@@ -77,7 +81,11 @@ class _Microhpone extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(width: 1.5, color: colors.staticWhite),
         ),
-        child: Icon(MIcons.microphone_off, size: 10, color: colors.staticWhite),
+        child: Icon(
+          micEnabled ? MIcons.microphone : MIcons.microphone_off,
+          size: 10,
+          color: colors.staticWhite,
+        ),
       ),
     );
   }

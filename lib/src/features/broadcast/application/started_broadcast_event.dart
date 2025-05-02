@@ -10,7 +10,7 @@ part 'started_broadcast_event.g.dart';
 @riverpod
 class StartedBroadcastEvent extends _$StartedBroadcastEvent {
   @override
-  Future<void> build() async {}
+  Future<bool> build() async => false;
 
   Future<void> emit() async {
     final id = ref.read(broadcastIDProvider);
@@ -30,7 +30,7 @@ class StartedBroadcastEvent extends _$StartedBroadcastEvent {
     );
 
     if (response.error == null) {
-      state = const AsyncData(null);
+      state = const AsyncData(true);
     } else {
       final error = _getSocketError(response.error);
       state = AsyncError(error, StackTrace.current);
