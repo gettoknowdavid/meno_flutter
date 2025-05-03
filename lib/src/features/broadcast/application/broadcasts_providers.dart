@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/config/env/env.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -30,6 +31,7 @@ class Broadcasts extends _$Broadcasts {
   FutureOr<BroadcastsState> build({
     required String sortBy,
     required OrderBy orderBy,
+    ID? id,
     bool? startTimeExists,
     bool? endTimeExists,
     String? include,
@@ -46,6 +48,7 @@ class Broadcasts extends _$Broadcasts {
       page: 1,
       sortBy: sortBy,
       orderBy: orderBy,
+      id: id,
       endTimeExists: endTimeExists,
       startTimeExists: startTimeExists,
       include: include,
@@ -63,6 +66,7 @@ class Broadcasts extends _$Broadcasts {
     required int page,
     required String sortBy,
     required OrderBy orderBy,
+    ID? id,
     String? keywords,
     bool? startTimeExists,
     bool? endTimeExists,
@@ -77,6 +81,7 @@ class Broadcasts extends _$Broadcasts {
       sortBy: sortBy,
       orderBy: orderBy,
       keywords: keywords,
+      id: id,
       startTimeExist: startTimeExists,
       endTimeExist: endTimeExists,
       include: include ?? 'totalListeners',
@@ -122,6 +127,7 @@ class Broadcasts extends _$Broadcasts {
         page: nextPage,
         keywords: keywords.isEmpty ? null : keywords,
         sortBy: sortBy,
+        id: id,
         orderBy: orderBy,
         startTimeExist: startTimeExists,
         endTimeExist: endTimeExists,

@@ -11,6 +11,7 @@ final _formKey = GlobalKey<FormState>();
 
 class BroadcastFormWidget extends HookConsumerWidget {
   const BroadcastFormWidget({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<BroadcastFormState>(broadcastFormProvider, (previous, next) {

@@ -4,6 +4,7 @@
 import 'dart:io' show File;
 
 import 'package:equatable/equatable.dart';
+import 'package:meno_flutter/src/config/config.dart' show OrderBy;
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 import 'package:meno_flutter/src/features/profile/profile.dart' show Profile;
 import 'package:meno_flutter/src/services/services.dart';
@@ -35,11 +36,33 @@ class SelectedCoHosts extends _$SelectedCoHosts {
 
 @riverpod
 class BroadcastForm extends _$BroadcastForm {
+  IBroadcastFacade get _facade => ref.read(broadcastFacadeProvider);
   @override
-  BroadcastFormState build() => BroadcastFormState(
-    title: SingleLineString(''),
-    description: MultiLineString(''),
-  );
+  BroadcastFormState build() {
+    ref.read(broadcastFormProvider.notifier).initialize(ID());
+    return BroadcastFormState(
+      title: SingleLineString(''),
+      description: MultiLineString(''),
+    );
+  }
+
+  Future<void> initialize(ID id) async {
+    state = state.copyWith(status: MenoFormStatus.inProgress, isEdit: true);
+    final result = await _facade.getBroadcasts(
+      id: id,
+      sortBy: 'startTime',
+      orderBy: OrderBy.ASC,
+      status: BroadacstStatus.inactive.name,
+    );
+    state = result.fold(
+      (exception) =>
+          state.copyWith(status: MenoFormStatus.failure, exception: exception),
+      (paginatedBroadcasts) => state.copyWith(
+        status: MenoFormStatus.success,
+        broadcast: paginatedBroadcasts.items.first,
+      ),
+    );
+  }
 
   void titleChanged(String value) {
     state = state.copyWith(
@@ -108,15 +131,13 @@ class BroadcastForm extends _$BroadcastForm {
 
     final cohosts = state.cohosts.map((e) => e.id).toList();
 
-    final result = await ref
-        .read(broadcastFacadeProvider)
-        .createBroadcast(
-          title: state.title,
-          description: state.description,
-          cohosts: cohosts,
-          image: state.image,
-          timezone: timezone,
-        );
+    final result = await _facade.createBroadcast(
+      title: state.title,
+      description: state.description,
+      cohosts: cohosts,
+      image: state.image,
+      timezone: timezone,
+    );
 
     state = result.fold(
       (exception) =>
@@ -137,6 +158,7 @@ class BroadcastFormState with EquatableMixin {
     this.status = MenoFormStatus.initial,
     this.exception,
     this.broadcast,
+    this.isEdit = false,
   });
 
   final SingleLineString title;
@@ -147,17 +169,18 @@ class BroadcastFormState with EquatableMixin {
   final MenoFormStatus status;
   final BroadcastException? exception;
   final Broadcast? broadcast;
+  final bool isEdit;
 
   BroadcastFormState copyWith({
     SingleLineString? title,
     MultiLineString? description,
     ImageFile? image,
     Set<Profile>? cohosts,
-    // Set<ID>? cohosts,
     bool? shouldRecord,
     MenoFormStatus? status,
     BroadcastException? exception,
     Broadcast? broadcast,
+    bool? isEdit,
   }) {
     return BroadcastFormState(
       title: title ?? this.title,
@@ -168,11 +191,19 @@ class BroadcastFormState with EquatableMixin {
       status: status ?? this.status,
       exception: exception ?? this.exception,
       broadcast: broadcast ?? this.broadcast,
+      isEdit: isEdit ?? this.isEdit,
     );
   }
 
   bool get isValid => title.isValid && description.isValid;
 
   @override
-  List<Object?> get props => [title, description, image, cohosts, shouldRecord];
+  List<Object?> get props => [
+    title,
+    description,
+    image,
+    cohosts,
+    shouldRecord,
+    isEdit,
+  ];
 }

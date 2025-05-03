@@ -261,6 +261,23 @@ class CreateBroadcastRoute extends GoRouteData {
   }
 }
 
+@TypedGoRoute<BroadcastDetailsRoute>(
+  path: '/broadcasts/:id',
+  name: 'Broadcast Details',
+)
+class BroadcastDetailsRoute extends GoRouteData {
+  const BroadcastDetailsRoute(this.id, {this.isEdit = false});
+  final String id;
+  final bool isEdit;
+
+  @override
+  Widget build(context, state) {
+    final realID = ID.fromString(id);
+    if (isEdit) return EditBroadcastPage(id: realID);
+    return BroadcastDetailsPage(id: realID);
+  }
+}
+
 @TypedGoRoute<BroadcastsRoute>(path: '/broadcasts', name: 'Broadcasts')
 class BroadcastsRoute extends GoRouteData {
   const BroadcastsRoute({

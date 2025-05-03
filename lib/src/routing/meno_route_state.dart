@@ -61,6 +61,7 @@ extension MenoRouteX on MenoRouteState {
         const AddCohostRoute().location,
         '/confirm-action',
         '/broadcasts',
+        '/broadcasts/:id',
         '/broadcasts/live/:id',
         '/particpants/:id',
       },
