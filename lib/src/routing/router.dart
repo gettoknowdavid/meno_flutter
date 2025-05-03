@@ -52,21 +52,33 @@ class SwitchAccountModalRoute extends GoRouteData {
   ###########################
 */
 
-@TypedGoRoute<PermissionsRequestRoute>(
-  path: '/permissions-settings-redirect',
-  name: 'Permissions Required',
+@TypedGoRoute<ConfirmationDialog>(
+  path: '/confirm-action',
+  name: 'Confirmation Required',
 )
-class PermissionsRequestRoute extends GoRouteData {
-  const PermissionsRequestRoute({this.permission = 'Microphone'});
-  final String permission;
+class ConfirmationDialog extends GoRouteData {
+  const ConfirmationDialog({
+    required this.title,
+    required this.description,
+    this.primaryActionText = 'Okay',
+    this.secondaryActionText = 'Cancel',
+    this.isDanger = false,
+  });
+
+  final String title;
+  final String description;
+  final String primaryActionText;
+  final String secondaryActionText;
+  final bool isDanger;
 
   @override
   Page<bool> buildPage(BuildContext context, GoRouterState state) {
     return DialogPage<bool>(
-      title: 'Permissions Required',
-      description:
-          '''You need to enable $permission permissions in Settings to use this feature. Would you like to open Settings now?''',
-      primaryActionText: 'Open Settings',
+      title: title,
+      description: description,
+      isDanger: isDanger,
+      primaryActionText: primaryActionText,
+      secondaryActionText: secondaryActionText,
       onPrimaryAction: () => context.pop(true),
       onSecondaryAction: () => context.pop(false),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
+import 'package:meno_flutter/src/routing/routing.dart';
 import 'package:meno_flutter/src/services/live_kit/live_kit.dart';
 import 'package:meno_flutter/src/services/live_kit/microphone.dart';
 
@@ -52,19 +53,33 @@ class _StartStopButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final broadcastNotifier = ref.read(liveBroadcastProvider.notifier);
     final livekit = ref.watch(liveKitProvider);
+    final status = ref.watch(liveBroadcastProvider.select((s) => s.status));
+
+    Future<void> startBroadcast() => broadcastNotifier.startBroadcast();
+
+    Future<void> endBroadcast() async {
+      final result = await const ConfirmationDialog(
+        title: 'Stop broadcast?',
+        description: 'Do you want to end this live broadcast?',
+        isDanger: true,
+        primaryActionText: 'Stop',
+      ).push(context);
+      if (result == true) return broadcastNotifier.endBroadcast();
+    }
+
+    void onPressed() {
+      livekit.maybeWhen(
+        orElse: endBroadcast,
+        data: (room) {
+          final isConnected = room?.isConnected ?? false;
+          return isConnected ? endBroadcast() : startBroadcast();
+        },
+      );
+    }
 
     return MenoDangerButton(
-      onPressed: livekit.maybeWhen(
-        orElse: () => broadcastNotifier.endBroadcast,
-        data: (data) {
-          final isConnected = data?.isConnected ?? false;
-          if (isConnected) return broadcastNotifier.endBroadcast;
-          return broadcastNotifier.startBroadcast;
-        },
-      ),
+      onPressed: status == MenoLiveStatus.inProgress ? null : onPressed,
       variant: MenoDangerButtonVariant.lighter,
-      isLoading:
-          ref.watch(liveBroadcastProvider).status == MenoLiveStatus.inProgress,
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: Insets.xlg),
         shape: const RoundedRectangleBorder(

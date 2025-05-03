@@ -47,7 +47,11 @@ class MenoLayout extends ConsumerWidget {
       }
 
       if ((status.isPermanentlyDenied || status.isDenied) && context.mounted) {
-        final res = await const PermissionsRequestRoute().push(context);
+        final res = await const ConfirmationDialog(
+          title: 'Permissions Required',
+          description: 'Enable microphone permissions to use this feature.',
+          primaryActionText: 'Open Settings',
+        ).push(context);
         if (res == true && context.mounted) {
           final notifier = ref.read(microphonePermissionsProvider.notifier);
           await notifier.openSettings();
