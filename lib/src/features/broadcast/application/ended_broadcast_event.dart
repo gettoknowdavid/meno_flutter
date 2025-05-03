@@ -12,12 +12,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'ended_broadcast_event.g.dart';
 
 @Riverpod(keepAlive: true)
-Stream<EndedBroadcastData> endedBroadcast(Ref ref) {
+Stream<EndedBroadcastData> endedBroadcastEvent(Ref ref) {
   final controller = StreamController<EndedBroadcastData>.broadcast();
 
   final socket = ref.read(socketProvider.notifier);
 
-  void handleEndedBroadcast(dynamic data) {
+  void onEndedBroadcast(dynamic data) {
     log('Received raw endedBroadcast event data: $data');
 
     try {
@@ -34,12 +34,12 @@ Stream<EndedBroadcastData> endedBroadcast(Ref ref) {
     }
   }
 
-  socket.addListener('endedBroadcast', handleEndedBroadcast);
+  socket.addListener('endedBroadcast', onEndedBroadcast);
   log('Listener added for "endedBroadcast" event.');
 
   ref.onDispose(() {
     log('Disposing & Removing listener and closing stream.');
-    socket.removeListener('endedBroadcast', handleEndedBroadcast);
+    socket.removeListener('endedBroadcast', onEndedBroadcast);
     controller.close();
   });
 

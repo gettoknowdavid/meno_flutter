@@ -27,6 +27,7 @@ class MenoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         MenoHeader.secondary(
           title: Row(

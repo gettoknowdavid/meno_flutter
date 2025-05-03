@@ -9,7 +9,7 @@ import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'broadcast_providers.g.dart';
+part 'broadcasts_providers.g.dart';
 
 final keywordsProvider = StateProvider.autoDispose<String>((_) => '');
 
@@ -30,7 +30,10 @@ class Broadcasts extends _$Broadcasts {
   FutureOr<BroadcastsState> build({
     required String sortBy,
     required OrderBy orderBy,
+    bool? startTimeExists,
     bool? endTimeExists,
+    String? include,
+    String? status,
   }) async {
     final keywords = ref.watch(keywordsProvider);
 
@@ -43,6 +46,10 @@ class Broadcasts extends _$Broadcasts {
       page: 1,
       sortBy: sortBy,
       orderBy: orderBy,
+      endTimeExists: endTimeExists,
+      startTimeExists: startTimeExists,
+      include: include,
+      status: status,
       keywords: keywords.isEmpty ? null : keywords,
       cancelToken: _cancelToken,
     );
@@ -57,6 +64,10 @@ class Broadcasts extends _$Broadcasts {
     required String sortBy,
     required OrderBy orderBy,
     String? keywords,
+    bool? startTimeExists,
+    bool? endTimeExists,
+    String? include,
+    String? status,
     CancelToken? cancelToken,
   }) async {
     final facade = ref.read(broadcastFacadeProvider);
@@ -66,8 +77,10 @@ class Broadcasts extends _$Broadcasts {
       sortBy: sortBy,
       orderBy: orderBy,
       keywords: keywords,
+      startTimeExist: startTimeExists,
       endTimeExist: endTimeExists,
-      include: 'totalListeners',
+      include: include ?? 'totalListeners',
+      status: status,
       cancelToken: cancelToken,
     );
 
@@ -110,8 +123,10 @@ class Broadcasts extends _$Broadcasts {
         keywords: keywords.isEmpty ? null : keywords,
         sortBy: sortBy,
         orderBy: orderBy,
+        startTimeExist: startTimeExists,
         endTimeExist: endTimeExists,
-        include: 'totalListeners',
+        include: include ?? 'totalListeners',
+        status: status,
         cancelToken: pageCancelToken,
       );
 

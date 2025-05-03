@@ -15,8 +15,10 @@ class BroadcastsPage extends HookConsumerWidget {
     required this.orderBy,
     this.page = 1,
     this.size = kPageSize,
+    this.startTimeExists,
     this.endTimeExists,
     this.include,
+    this.status,
     super.key,
   });
 
@@ -25,8 +27,10 @@ class BroadcastsPage extends HookConsumerWidget {
   final int size;
   final String sortBy;
   final OrderBy orderBy;
+  final bool? startTimeExists;
   final bool? endTimeExists;
   final String? include;
+  final String? status;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +38,10 @@ class BroadcastsPage extends HookConsumerWidget {
       broadcastsProvider(
         sortBy: sortBy,
         orderBy: orderBy,
+        startTimeExists: startTimeExists,
         endTimeExists: endTimeExists,
+        include: include,
+        status: status,
       ),
     );
 
@@ -53,6 +60,10 @@ class BroadcastsPage extends HookConsumerWidget {
             child: switch (type) {
               BroadcastsPageType.recently => RecentlyLiveBroadcastsListWidget(
                 key: const Key('RecentlyLiveBroadcastsList'),
+                broadcasts: broadcasts,
+              ),
+              BroadcastsPageType.now => NowLiveBroadcastsListWidget(
+                key: const Key('NowLiveBroadcastsList'),
                 broadcasts: broadcasts,
               ),
               _ => Container(),

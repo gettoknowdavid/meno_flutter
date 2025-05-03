@@ -257,8 +257,10 @@ class BroadcastsRoute extends GoRouteData {
     required this.orderBy,
     this.page = 1,
     this.size = kPageSize,
+    this.startTimeExists,
     this.endTimeExists,
     this.include,
+    this.status,
   });
 
   final BroadcastsPageType type;
@@ -266,8 +268,10 @@ class BroadcastsRoute extends GoRouteData {
   final int size;
   final String sortBy;
   final OrderBy orderBy;
+  final bool? startTimeExists;
   final bool? endTimeExists;
   final String? include;
+  final String? status;
 
   @override
   Widget build(context, state) {
@@ -277,8 +281,10 @@ class BroadcastsRoute extends GoRouteData {
       size: size,
       sortBy: sortBy,
       orderBy: orderBy,
+      startTimeExists: startTimeExists,
       endTimeExists: endTimeExists,
       include: include,
+      status: status,
     );
   }
 }

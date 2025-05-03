@@ -55,7 +55,7 @@ class MenoLayout extends ConsumerWidget {
       }
     }
 
-    ref.listen(endedBroadcastProvider, (previous, next) {
+    ref.listen(endedBroadcastEventProvider, (previous, next) {
       switch (next) {
         case AsyncError(:final error):
           final message = (error as SocketException).message;

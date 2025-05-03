@@ -24,6 +24,13 @@ Dio dio(Ref ref, String baseUrl) {
   final storage = ref.read(secureStorageProvider);
   final interceptor = AuthInterceptor(storage: storage);
   final dio = Dio()..options = BaseOptions(baseUrl: baseUrl);
-  dio.interceptors.add(interceptor);
+  dio.interceptors.addAll([
+    interceptor,
+    LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+    ),
+  ]);
   return dio;
 }

@@ -80,6 +80,7 @@ class AuthInterceptor extends Interceptor {
     if (token != null) {
       options.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
+
     return super.onRequest(options, handler);
   }
 }
