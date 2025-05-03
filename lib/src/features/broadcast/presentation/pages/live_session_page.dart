@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
 import 'package:meno_flutter/src/features/chat/chat.dart' show LiveChatTab;
 import 'package:meno_flutter/src/routing/routing.dart';
@@ -42,14 +43,14 @@ class LiveSessionPage extends HookConsumerWidget {
       }
     });
 
-    ref.listen(liveKitProvider, (_, next) async {
+    ref.listen(liveKitProvider, (_, next) {
       switch (next) {
         case AsyncError(:final error):
           final message = (error as LiveKitException).message;
           throw BroadcastExceptionWithMessage(message);
         case AsyncData(:final value):
           if (!(value?.isConnected ?? false)) return;
-          await ref.read(startedBroadcastEventProvider.notifier).emit();
+          ref.read(startedBroadcastEventProvider.notifier).emit();
         default:
       }
     });
@@ -68,6 +69,30 @@ class LiveSessionPage extends HookConsumerWidget {
           }
         default:
       }
+    });
+
+    ref.listen(liveKitEventProvider, (previous, next) {
+      next.whenOrNull(
+        data: (data) {
+          switch (data) {
+            case TrackMutedEvent(:final participant):
+              final credential = ref.read(sessionProvider).value;
+              if (participant.identity == credential?.user.id.getOrNull()) {
+                MenoSnackBar.show('You have muted your microphone');
+              } else {
+                MenoSnackBar.show('Host has muted their microphone');
+              }
+            case TrackUnmutedEvent(:final participant):
+              final credential = ref.read(sessionProvider).value;
+              if (participant.identity == credential?.user.id.getOrNull()) {
+                MenoSnackBar.show('You have unmuted your microphone');
+              } else {
+                MenoSnackBar.show('Host has unmuted their microphone');
+              }
+            default:
+          }
+        },
+      );
     });
 
     final currentIndex = useState(0);

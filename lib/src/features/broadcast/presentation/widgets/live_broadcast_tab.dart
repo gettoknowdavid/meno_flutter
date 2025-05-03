@@ -26,7 +26,14 @@ class LiveBroadcastTab extends HookConsumerWidget {
                 MenoSpacer.v(Insets.sm),
                 BroadcastTitleWidget(key: Key('LiveBroadcastTitle')),
                 MenoSpacer.v(Insets.sm),
-                BroadcastCreatorWidget(key: Key('LiveBroadcastCreator')),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: Insets.sm,
+                  children: [
+                    BroadcastCreatorWidget(key: Key('LiveBroadcastCreator')),
+                    BroadcastStatusWidget(key: Key('LiveBroadcastStatus')),
+                  ],
+                ),
                 MenoSpacer.v(Insets.xxlg),
                 BroadcastControlButtons(key: Key('LiveBroadcastControls')),
               ],
