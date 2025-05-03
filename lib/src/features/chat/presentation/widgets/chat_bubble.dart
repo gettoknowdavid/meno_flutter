@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:meno_design_system/meno_design_system.dart';
 import 'package:meno_flutter/src/features/chat/chat.dart' show Chat;
+import 'package:meno_flutter/src/shared/shared.dart' show MenoDot;
 
 class ChatBubble extends StatelessWidget {
   const ChatBubble(this.chat, {super.key});
@@ -64,14 +65,14 @@ class _SenderDetails extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const _Dot(),
+        const MenoDot(),
         MenoText.micro(
           'Host',
           color: colors.labelDisabled,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        const _Dot(),
+        const MenoDot(),
         MenoText.micro(
           formattedTimestamp,
           color: colors.labelDisabled,
@@ -105,22 +106,6 @@ class _ChatContent extends StatelessWidget {
       child: MenoText.caption(
         chat.content.getOrCrash(),
         weight: MenoFontWeight.regular,
-      ),
-    );
-  }
-}
-
-class _Dot extends StatelessWidget {
-  const _Dot();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 2,
-      width: 2,
-      decoration: BoxDecoration(
-        color: MenoColorScheme.of(context).labelDisabled,
-        shape: BoxShape.circle,
       ),
     );
   }
