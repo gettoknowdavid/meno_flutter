@@ -20,7 +20,11 @@ class LiveChatTab extends HookConsumerWidget {
         ),
         SafeArea(
           child: Column(
-            children: [ChatInputWidget(scrollController: scrollController)],
+            children: [
+              // ChatWelcomeWidget(),
+              //const EditingMessageWidget(),
+              ChatInputWidget(scrollController: scrollController),
+            ],
           ),
         ),
       ],

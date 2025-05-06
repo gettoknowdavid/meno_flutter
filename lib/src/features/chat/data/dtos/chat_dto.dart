@@ -18,6 +18,7 @@ final class ChatDto with EquatableMixin {
     this.fullName,
     this.imageUrl,
     this.updatedAt,
+    this.status = ChatStatus.sending,
   });
 
   factory ChatDto.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +35,8 @@ final class ChatDto with EquatableMixin {
   final String broadcastId;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final ChatStatus status;
 
   @override
   List<Object?> get props => [
@@ -46,6 +49,7 @@ final class ChatDto with EquatableMixin {
     broadcastId,
     createdAt,
     updatedAt,
+    status,
   ];
 }
 
@@ -61,6 +65,7 @@ extension ChatToDto on Chat {
       fullName: fullName?.getOrNull(),
       imageUrl: imageUrl,
       updatedAt: updatedAt,
+      status: status,
     );
   }
 }
@@ -77,6 +82,7 @@ extension ChatToDomain on ChatDto {
       broadcastId: ID.fromString(broadcastId),
       createdAt: createdAt,
       updatedAt: updatedAt,
+      status: status,
     );
   }
 }

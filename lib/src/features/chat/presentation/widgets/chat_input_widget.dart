@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/src/features/chat/chat.dart';
 
 class ChatInputWidget extends HookConsumerWidget {
   const ChatInputWidget({required this.scrollController, super.key});
@@ -28,20 +29,34 @@ class ChatInputWidget extends HookConsumerWidget {
   }
 }
 
-class _ChatTextField extends HookWidget {
+class _ChatTextField extends HookConsumerWidget {
   const _ChatTextField();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final focusNode = useFocusNode();
-    final controller = useTextEditingController(text: '');
+    final notifier = ref.read(chatFormNotifierProvider.notifier);
+    final initialChat = ref.watch(
+      chatFormNotifierProvider.select((s) => s.initialChat),
+    );
 
-    return MenoTextfield(
+    return TextFormField(
+      style: MenoTextTheme.of(context).captionRegular,
       focusNode: focusNode,
-      controller: controller,
+      onChanged: notifier.contentChanged,
+      initialValue: initialChat?.content.getOrNull(),
+      maxLines: 5,
+      minLines: 1,
+      maxLength: 244,
       keyboardType: TextInputType.multiline,
-      placeholder: 'Type your comment here...',
-      size: MenoSize.lg,
+      decoration: const InputDecoration(
+        hintText: 'Type your comment here...',
+        counter: SizedBox(),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: Insets.sm,
+          horizontal: Insets.md,
+        ),
+      ),
     );
   }
 }
@@ -70,6 +85,10 @@ class _SendButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = MenoColorScheme.of(context);
+
+    final input = ref.watch(chatFormNotifierProvider);
+    final chats = ref.watch(chatListProvider);
+    
     return MenoIconButton.filled(
       MIcons.send,
       fillColor: colors.brandPrimary,

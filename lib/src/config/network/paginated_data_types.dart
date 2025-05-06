@@ -75,3 +75,47 @@ final class PaginatedProfileResponse<ProfileDto>
   @override
   bool? get stringify => true;
 }
+
+@JsonSerializable(genericArgumentFactories: true)
+final class PaginatedChatMessages<ChatDto>
+    with EquatableMixin, Paginated<ChatDto?> {
+  const PaginatedChatMessages({
+    required this.chatMessages,
+    required this.totalPages,
+    required this.totalItems,
+    required this.currentPage,
+  });
+
+  factory PaginatedChatMessages.fromJson(
+    Map<String, dynamic> json,
+    ChatDto Function(Object?) fromJsonT,
+  ) => _$PaginatedChatMessagesFromJson(json, fromJsonT);
+
+  final List<ChatDto?> chatMessages;
+
+  @override
+  List<ChatDto?> get items => chatMessages;
+
+  @override
+  final int totalPages;
+
+  @override
+  final int totalItems;
+
+  @override
+  final int currentPage;
+
+  @override
+  List<Object?> get props => [
+    chatMessages,
+    totalItems,
+    totalPages,
+    currentPage,
+  ];
+
+  Map<String, dynamic> toJson(Object? Function(ChatDto value) toJsonT) =>
+      _$PaginatedChatMessagesToJson(this, toJsonT);
+
+  @override
+  bool? get stringify => true;
+}

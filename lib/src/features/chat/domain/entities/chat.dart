@@ -2,6 +2,17 @@ import 'package:equatable/equatable.dart';
 import 'package:meno_flutter/src/features/chat/domain/entities/chat_sender.dart';
 import 'package:meno_flutter/src/shared/shared.dart';
 
+enum ChatStatus {
+  /// Indicates the message is being sent or is pending delivery
+  sending,
+
+  /// Indicates the message has been sent or delivered
+  sent,
+
+  /// Indicates the message could not be delivered due to an error
+  failed,
+}
+
 final class Chat with EquatableMixin {
   const Chat({
     required this.id,
@@ -13,6 +24,7 @@ final class Chat with EquatableMixin {
     this.fullName,
     this.imageUrl,
     this.updatedAt,
+    this.status = ChatStatus.sending,
   });
 
   final ID id;
@@ -24,6 +36,7 @@ final class Chat with EquatableMixin {
   final ID broadcastId;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final ChatStatus status;
 
   @override
   List<Object?> get props => [
@@ -36,7 +49,9 @@ final class Chat with EquatableMixin {
     broadcastId,
     createdAt,
     updatedAt,
+    status,
   ];
+
   Chat copyWith({
     ID? id,
     MultiLineString? content,
@@ -47,6 +62,7 @@ final class Chat with EquatableMixin {
     ID? broadcastId,
     DateTime? createdAt,
     DateTime? updatedAt,
+    ChatStatus? status,
   }) {
     return Chat(
       id: id ?? this.id,
@@ -58,6 +74,7 @@ final class Chat with EquatableMixin {
       broadcastId: broadcastId ?? this.broadcastId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      status: status ?? this.status,
     );
   }
 }

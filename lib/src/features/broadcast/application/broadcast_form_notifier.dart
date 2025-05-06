@@ -39,7 +39,6 @@ class BroadcastForm extends _$BroadcastForm {
   IBroadcastFacade get _facade => ref.read(broadcastFacadeProvider);
   @override
   BroadcastFormState build() {
-    ref.read(broadcastFormProvider.notifier).initialize(ID());
     return BroadcastFormState(
       title: SingleLineString(''),
       description: MultiLineString(''),
