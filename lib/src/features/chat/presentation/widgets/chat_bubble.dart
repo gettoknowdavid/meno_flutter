@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:meno_design_system/meno_design_system.dart';
-import 'package:meno_flutter/src/features/chat/chat.dart' show Chat;
+import 'package:meno_flutter/src/config/config.dart';
+import 'package:meno_flutter/src/features/chat/chat.dart' show Chat, ChatStatus;
 import 'package:meno_flutter/src/shared/shared.dart' show MenoDot;
 
 class ChatBubble extends StatelessWidget {
@@ -39,18 +41,21 @@ class ChatBubble extends StatelessWidget {
   }
 }
 
-class _SenderDetails extends StatelessWidget {
+class _SenderDetails extends ConsumerWidget {
   const _SenderDetails({required this.chat, super.key});
   final Chat chat;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = MenoColorScheme.of(context);
 
     final name = (chat.fullName ?? chat.sender?.fullName)!.getOrCrash();
 
     final time = GetTimeAgo.parse(chat.updatedAt ?? chat.createdAt);
     final formattedTimestamp = chat.updatedAt != null ? 'Edited $time' : time;
+
+    final user = ref.watch(sessionProvider).value?.user;
+    final isHost = (chat.senderId ?? chat.sender?.id) == user?.id;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -66,19 +71,29 @@ class _SenderDetails extends StatelessWidget {
           ),
         ),
         const MenoDot(),
-        MenoText.micro(
-          'Host',
-          color: colors.labelDisabled,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const MenoDot(),
-        MenoText.micro(
-          formattedTimestamp,
-          color: colors.labelDisabled,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        if (isHost) ...[
+          MenoText.micro(
+            'Host',
+            color: colors.labelDisabled,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const MenoDot(),
+        ],
+        if (chat.status == ChatStatus.sent)
+          MenoText.micro(
+            formattedTimestamp,
+            color: colors.labelDisabled,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          )
+        else
+          MenoText.micro(
+            'Pending delivery',
+            color: colors.errorBase,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
       ],
     );
   }

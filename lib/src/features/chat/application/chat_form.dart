@@ -3,16 +3,18 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:meno_flutter/src/features/chat/chat.dart';
+import 'package:meno_flutter/src/shared/shared.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_form.g.dart';
 
 @riverpod
-class ChatFormNotifier extends _$ChatFormNotifier {
+class ChatForm extends _$ChatForm {
   @override
   ChatFormState build() => const ChatFormState();
 
-  void contentChanged(String content) {
+  void contentChanged(String value) {
+    final content = MultiLineString(value);
     state = state.copyWith(content: content);
   }
 
@@ -20,7 +22,7 @@ class ChatFormNotifier extends _$ChatFormNotifier {
     state = state.copyWith(
       isEditing: true,
       initialChat: chat,
-      content: chat.content.getOrNull(),
+      content: chat.content,
     );
   }
 
@@ -42,13 +44,13 @@ class ChatFormState with EquatableMixin {
   });
 
   final Chat? initialChat;
-  final String? content;
+  final MultiLineString? content;
   final bool isEditing;
   final bool hideWelcomeNote;
 
   ChatFormState copyWith({
     Chat? initialChat,
-    String? content,
+    MultiLineString? content,
     bool? isEditing,
     bool? hideWelcomeNote,
   }) {

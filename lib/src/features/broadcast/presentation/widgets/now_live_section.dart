@@ -65,9 +65,13 @@ class _ListWidget extends StatelessWidget {
           return MenoLiveCard(
             key: ValueKey(broadcasts[index]?.id),
             title: broadcast.title.getOrCrash(),
-            creator: broadcast.fullName?.getOrNull() ?? '',
             imageUrl: broadcast.imageUrl,
             numberOfParticipants: broadcast.totalListeners ?? 0,
+            creator:
+                broadcast.fullName?.getOrNull() ??
+                broadcast.creator?.fullName.getOrNull() ??
+                broadcast.creatorFullName?.getOrNull() ??
+                '',
           );
         },
       ),

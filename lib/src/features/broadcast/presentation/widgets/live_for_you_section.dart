@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meno_design_system/meno_design_system.dart';
+import 'package:meno_flutter/src/features/broadcast/application/live_broadcast.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart'
-    show MenoSection;
+    show MenoSection, broadcastIDProvider;
 import 'package:meno_flutter/src/routing/routing.dart';
-import 'package:uuid/uuid.dart';
+import 'package:meno_flutter/src/shared/shared.dart' show ID;
 
 class LiveForYouSection extends HookConsumerWidget {
   const LiveForYouSection({super.key});
@@ -37,8 +38,12 @@ class LiveForYouSection extends HookConsumerWidget {
                       icon: const Icon(MIcons.compass),
                       label: const Text('Discover'),
                       onPressed: () {
-                        final broadcastID = const Uuid().v4();
-                        LiveSessionRoute(broadcastID).push(context);
+                        final id = ID.fromString(
+                          '4759e1d1-0d20-4943-b953-f7b315b10861',
+                        );
+                        ref.read(broadcastIDProvider.notifier).state = id;
+                        ref.read(liveBroadcastProvider.notifier).initialize();
+                        const ChatsRoute().push(context);
                       },
                     ),
                   ),

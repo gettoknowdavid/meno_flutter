@@ -20,6 +20,7 @@ class LiveChatTab extends HookConsumerWidget {
         ),
         SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // ChatWelcomeWidget(),
               //const EditingMessageWidget(),

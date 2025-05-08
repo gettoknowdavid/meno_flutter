@@ -5,6 +5,7 @@ import 'package:meno_flutter/src/config/constants/constants.dart';
 import 'package:meno_flutter/src/features/auth/presentation/presentation.dart';
 import 'package:meno_flutter/src/features/broadcast/domain/entities/participant_role.dart';
 import 'package:meno_flutter/src/features/broadcast/presentation/presentation.dart';
+import 'package:meno_flutter/src/features/chat/chat.dart' show LiveChatTab;
 import 'package:meno_flutter/src/features/onboarding/onboarding.dart';
 import 'package:meno_flutter/src/features/profile/profile.dart';
 import 'package:meno_flutter/src/features/settings/presentation/presentation.dart';
@@ -276,6 +277,17 @@ class BroadcastDetailsRoute extends GoRouteData {
     if (isEdit) return EditBroadcastPage(id: realID);
     return BroadcastDetailsPage(id: realID);
   }
+}
+
+@TypedGoRoute<ChatsRoute>(path: '/chats', name: 'Chats')
+class ChatsRoute extends GoRouteData {
+  const ChatsRoute();
+
+  @override
+  Widget build(context, state) => Scaffold(
+    appBar: MenoHeader.secondary(title: const Text('Chats')),
+    body: const LiveChatTab(),
+  );
 }
 
 @TypedGoRoute<BroadcastsRoute>(path: '/broadcasts', name: 'Broadcasts')

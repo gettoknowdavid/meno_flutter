@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meno_flutter/src/config/config.dart';
 import 'package:meno_flutter/src/features/auth/auth.dart';
 import 'package:meno_flutter/src/features/broadcast/broadcast.dart';
@@ -10,84 +9,14 @@ import 'package:meno_flutter/src/features/chat/chat.dart';
 import 'package:meno_flutter/src/services/socket/socket.dart';
 import 'package:meno_flutter/src/shared/shared.dart' show ID, MultiLineString;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:uuid/uuid.dart';
 
 part 'chat_list.g.dart';
 
-@riverpod
-Future<void> sendChatMessage(
-  Ref ref, {
-  required ID broadcastId,
-  required MultiLineString content,
-}) async {
-  final chatListNotifier = ref.read(chatListProvider.notifier);
-  final socket = ref.read(socketProvider.notifier);
-  final user = ref.read(sessionProvider).value?.user;
-
-  final contentString = content.getOrCrash();
-  if (user == null || contentString.trim().isEmpty) {
-    log('sendMessage aborted: User not logged in or content empty.');
-    return;
-  }
-
-  const uuid = Uuid();
-
-  // Generate Temporary ID and Object
-  final tempId = ID.fromString(uuid.v4());
-  final now = DateTime.now();
-  final tempChat = _createChatObject(
-    id: tempId,
-    user: user,
-    broadcastId: broadcastId,
-    content: content,
-    createdAt: now,
-    status: ChatStatus.sending,
-  );
-
-  chatListNotifier.stageOptimisticMessage(
-    optimisticChat: tempChat,
-    rawContent: contentString,
-    originalCreationTime: now,
-  );
-
-  try {
-    final payload = {
-      'senderId': user.id.getOrCrash(),
-      'broadcastId': broadcastId,
-      'content': content,
-      'createdAt': now.toIso8601String(),
-    };
-
-    log('Sending message payload (no tempId): $payload');
-
-    final ack = await socket.emitWithAck('sendChatMessage', payload);
-
-    log('Received ack for sent message (tempId $tempId): $ack');
-
-    final response = BaseResponse.fromJson(
-      ack as Map<String, dynamic>,
-      (json) => json as dynamic,
-    );
-
-    if (response.error != null) {
-      log('Sending failed for tempId: $tempId. Error: ${response.error}');
-      chatListNotifier.markMessageAsFailed(tempId);
-    } else {
-      // Success via Ack - message sent to server.
-      // Now we wait for _onNewMessage or timeout.
-      log('Sending successfull for tempId: $tempId.');
-    }
-  } on Exception catch (e) {
-    log('Exception message or processing Ack for tempId $tempId: $e');
-    chatListNotifier.markMessageAsFailed(tempId);
-  }
-}
 
 @Riverpod(keepAlive: true)
 class ChatList extends _$ChatList {
   Socket get _socket => ref.read(socketProvider.notifier);
   User? get _currentUser => ref.read(sessionProvider).value?.user;
-  final Uuid _uuid = const Uuid();
 
   // Store temporary IDs -> Info map for messages currently being sent
   // Key: tempId
@@ -110,23 +39,19 @@ class ChatList extends _$ChatList {
 
     _setupSocketListeners();
 
-    final facade = ref.read(chatFacadeProvider);
-    final response = await facade.getChatMessages(broadcastId: id);
-
-    final messages = response.fold(
-      (exception) => throw exception,
-      (paginatedList) => paginatedList.items,
-    );
-
-    final controller = StreamController<Chat>.broadcast();
-
     ref.onDispose(() {
       log('Disposing ChatList for $id...');
       _removeSocketListeners();
-      controller.close();
+      _cleanUpPendingTimers();
     });
 
-    return messages;
+    final facade = ref.read(chatFacadeProvider);
+    final response = await facade.getChatMessages(broadcastId: id);
+
+    return response.fold(
+      (exception) => throw exception,
+      (paginatedList) => paginatedList.items,
+    );
   }
 
   void _setupSocketListeners() {
@@ -331,91 +256,13 @@ class ChatList extends _$ChatList {
       _updateMessageStatus(tempId, ChatStatus.failed);
       log('ChatList: Marked message as failed: $tempId');
     } else {
-      // It might have been confirmed and removed from pending just before failure was processed
-      log(
-        'ChatList: Tried to mark $tempId as failed, but it was not in pending state (possibly already resolved).',
-      );
-      // Still update status if it's in the main list but not pending (edge case)
+      // It might have been confirmed and removed from pending
+      // just before failure was processed
+      log('ChatList: Tried to mark $tempId as failed not in pending state.');
+      // Still update status if it's in the main list but not pending
       _updateMessageStatus(tempId, ChatStatus.failed);
     }
   }
-
-  // Future<void> sendMessage({
-  //   required ID broadcastId,
-  //   required MultiLineString content,
-  // }) async {
-  //   final user = _currentUser;
-  //   final contentString = content.getOrCrash();
-  //   if (user == null || contentString.trim().isEmpty) {
-  //     log('sendMessage aborted: User not logged in or content empty.');
-  //     return;
-  //   }
-
-  //   // 1. Generate Temporary ID and Object
-  //   final tempId = ID.fromString(_uuid.v4());
-  //   final now = DateTime.now();
-  //   final tempChat = _createChatObject(
-  //     id: tempId,
-  //     user: user,
-  //     broadcastId: broadcastId,
-  //     content: content,
-  //     createdAt: now,
-  //     status: ChatStatus.sending,
-  //   );
-
-  //   // Setup timeout timer
-  //   Timer? messageTimer; // Declare timer variable
-  //   messageTimer = Timer(_messageTimeoutDuration, () {
-  //     // Timer fired! Message likely timed out.
-  //     log('Message timeout for tempId: $tempId');
-  //     _handleMessageTimeout(tempId);
-  //   });
-
-  //   // Store pending info
-  //   _pendingMessages[tempId] = _PendingMessage(
-  //     content: contentString,
-  //     timer: messageTimer,
-  //     createdAt: now,
-  //   );
-
-  //   // 2. Optimistic UI Update
-  //   state.whenData((currentMessages) {
-  //     state = AsyncData([tempChat, ...currentMessages]);
-  //     log('Optimistically added message with tempId: $tempId');
-  //   });
-
-  //   try {
-  //     final payload = {
-  //       'senderId': _currentUser?.id.getOrCrash(),
-  //       'broadcastId': broadcastId,
-  //       'content': content,
-  //       'createdAt': now.toIso8601String(),
-  //     };
-
-  //     log('Sending message payload (no tempId): $payload');
-
-  //     final ack = await _socket.emitWithAck('sendChatMessage', payload);
-
-  //     log('Received ack for sent message (tempId $tempId): $ack');
-
-  //     final response = BaseResponse.fromJson(
-  //       ack as Map<String, dynamic>,
-  //       (json) => json as dynamic,
-  //     );
-
-  //     if (response.error != null) {
-  //       log('Sending failed for tempId: $tempId. Error: ${response.error}');
-  //       _handleSendFailure(tempId);
-  //     } else {
-  //       // Success via Ack - message sent to server.
-  //       // Now we wait for _onNewMessage or timeout.
-  //       log('Sending successfull for tempId: $tempId.');
-  //     }
-  //   } on Exception catch (e) {
-  //     log('Exception message or processing Ack for tempId $tempId: $e');
-  //     _handleSendFailure(tempId);
-  //   }
-  // }
 
   Future<void> editMessage({
     required ID id,
@@ -439,13 +286,11 @@ class ChatList extends _$ChatList {
     }
   }
 
-  // Helper for immediate send failure logic
-  void _handleSendFailure(ID tempId) {
-    if (_pendingMessages.containsKey(tempId)) {
-      _pendingMessages[tempId]?.timer.cancel();
-      _pendingMessages.remove(tempId);
-      _updateMessageStatus(tempId, ChatStatus.failed);
+  void _cleanUpPendingTimers() {
+    for (final info in _pendingMessages.values) {
+      info.timer.cancel();
     }
+    _pendingMessages.clear();
   }
 
   // Helper to update status (same as before)
@@ -478,41 +323,13 @@ class ChatList extends _$ChatList {
 }
 
 class _PendingMessage {
-  final String content;
-  final Timer timer;
-  final DateTime createdAt;
-
-  _PendingMessage({
+  const _PendingMessage({
     required this.content,
     required this.timer,
     required this.createdAt,
   });
-}
 
-Chat _createChatObject({
-  required ID id,
-  required User user,
-  required ID broadcastId,
-  required MultiLineString content,
-  required DateTime createdAt,
-  required ChatStatus status,
-  DateTime? updatedAt,
-}) {
-  /* ... same implementation ... */
-  return Chat(
-    id: id,
-    content: content,
-    broadcastId: broadcastId,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    senderId: user.id,
-    fullName: user.fullName,
-    imageUrl: user.imageUrl,
-    status: status,
-    sender: ChatSender(
-      id: user.id,
-      fullName: user.fullName,
-      imageUrl: user.imageUrl,
-    ),
-  );
+  final String content;
+  final Timer timer;
+  final DateTime createdAt;
 }
