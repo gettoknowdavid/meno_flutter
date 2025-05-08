@@ -12,4 +12,12 @@ extension OrderByX on OrderBy {
         return 'ASC';
     }
   }
+  String get lowercaseName {
+    switch (this) {
+      case OrderBy.DESC:
+        return 'desc';
+      case OrderBy.ASC:
+        return 'asc';
+    }
+  }
 }

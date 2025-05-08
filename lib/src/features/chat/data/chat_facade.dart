@@ -22,7 +22,7 @@ class ChatFacade implements IChatFacade {
     try {
       final response = await _remote.chatMessages(
         broadcastId: broadcastId.getOrCrash(),
-        orderBy: orderBy?.name,
+        orderBy: orderBy?.lowercaseName,
         page: page,
         size: size,
       );
